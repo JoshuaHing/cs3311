@@ -1,4 +1,10 @@
-create or replace view Q1(Name, Country) as ...
+
+--List all the company names (and countries) that are incorporated outside Australia.
+CREATE OR REPLACE VIEW Q1(Name, Country) AS
+SELECT c.Name, c.Country
+    FROM company c
+WHERE NOT c.Country = 'Australia'
+
 
 --create or replace view Q2(Code) as ...
 
