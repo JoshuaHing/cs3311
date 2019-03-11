@@ -89,7 +89,6 @@ group by a."Date", a.Code
 */
 
 
-
 /*
 --Find the number of companies per Industry. Order your result by Sector and then by Industry.
 create or replace view Q9(Sector, Industry, Number) as
@@ -133,21 +132,28 @@ having count(person) > 1
 --Find all the companies with a registered address in Australia, in a Sector
 --where there are no overseas companies in the same Sector. i.e.,
 --they are in a Sector that all companies there have local Australia address.
-/*
-create or replace view company_sector_table(Code, Sector, Country) as
-select c2.Code, c1.sector, c2.country
-from category c1 join company c2 on (c1.code = c2.code);
-
-create or replace view aus_count(Sector, Count) as
-select cst.Sector, count(*)
-from company_sector_table cst
-where cst.country = 'Australia';
 
 
-create or replace view country_count(Sector, Count) as
-select cst.Sector, count(*)
-from company_sector_table cst;
-*/
+-- Find all companies that are located out of australia
+create or replace view not_in_aust(Code, Country) as
+select c.code, c.country
+from company c
+where not c.country = 'Australia';
+
+-- Now, find the corresponding sectors
+create or replace view sect(Sector) as
+select c2.sector
+from company c1 join category c2 on c1.code = c2.code,  not_in_aust nia
+where c1.code = nia.code and c1.country = nia.Country
+group by c2.sector;
+
+
+create or replace view Q13(Code, Name, Address, Zip, Sector) as
+select c1.Code, c1.Name, c1.Address, c1.Zip, c2.sector
+from company c1 join category c2 on c1.code = c2.code, sect s
+where c2.sector != s.sector;
+
+
 
 /*
 create or replace view Q13(Code, Name, Address, Zip, Sector) as
