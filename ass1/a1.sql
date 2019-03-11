@@ -99,14 +99,30 @@ group by c.Industry, c.Sector
 */
 
 
-
+/*
 --List all the companies (by their Code) that are the only one in their Industry (i.e., no competitors).
 create or replace view Q10(Code, Industry) as
 select c.Code, c.Industry
+from category c
+group by c.Industry, c.Code
+having count(c.Industry) = 1
+*/
 
---create or replace view Q11(Sector, AvgRating) as ...
+/*
+--List all sectors ranked by their average ratings in descending order.
+--AvgRating is calculated by finding the average AvgCompanyRating for each sector (where AvgCompanyRating is the average rating of a company).
 
---create or replace view Q12(Name) as ...
+--join rating and category table
+create or replace view Q11(Sector, AvgRating) as
+select  c.Sector, avg(r.star)
+from category c join rating r on (c.code = r.code)
+group by c.sector
+*/
+
+--Output the person names of the executives that are affiliated with more than one company.
+create or replace view Q12(Name) as
+    
+
 
 --create or replace view Q13(Code, Name, Address, Zip, Sector) as ...
 
