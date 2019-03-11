@@ -120,16 +120,52 @@ group by c.sector
 */
 
 
+/*
 --Output the person names of the executives that are affiliated with more than one company.
 create or replace view Q12(Name) as
 select Person
 from executive
 group by Person
 having count(person) > 1
+*/
+
+--count(australia) = count(sector)
+--Find all the companies with a registered address in Australia, in a Sector
+--where there are no overseas companies in the same Sector. i.e.,
+--they are in a Sector that all companies there have local Australia address.
+/*
+create or replace view company_sector_table(Code, Sector, Country) as
+select c2.Code, c1.sector, c2.country
+from category c1 join company c2 on (c1.code = c2.code);
+
+create or replace view aus_count(Sector, Count) as
+select cst.Sector, count(*)
+from company_sector_table cst
+where cst.country = 'Australia';
 
 
+create or replace view country_count(Sector, Count) as
+select cst.Sector, count(*)
+from company_sector_table cst;
+*/
 
---create or replace view Q13(Code, Name, Address, Zip, Sector) as ...
+/*
+create or replace view Q13(Code, Name, Address, Zip, Sector) as
+select c.Code, c.Name, c.Address, c.Zip, ac.Sector
+from company c, aus_count ac, country_count cc
+where ac.Count = cc.Count and ac.Sector = cc.Sector
+*/
+
+-- Now, for each sector, count the number of australia.
+
+/*
+create or replace view Q13(Code, Name, Address, Zip, Sector) as
+select c1.Code, c1.Name, c1.Address, c1.Zip, c2.Sector
+from company c1, category c2, sect_aust_count count1, sect_count_count count2
+group by c2.sector, c1.code
+having (count1.Count = count2.Count);
+*/
+
 
 --create or replace view Q14(Code, BeginPrice, EndPrice, Change, Gain) as ...
 
