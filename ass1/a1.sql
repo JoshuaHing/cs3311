@@ -54,21 +54,55 @@ where c2.sector = 'Services' and c.country = 'Australia' and c.zip ~ '^2[0-9]{3}
 
 --create or replace view Q7("Date", Code, Volume, PrevPrice, Price, Change, Gain) as ...
 /*
+SELECT inner_nest.tnr, 100*(inner_nest.forward_price - inner_nest.price)/inner_nest.price as growth
+FROM
+(
+  SELECT t1.*, (SELECT t2.price
+                FROM pricelist AS t2
+                WHERE t2.tnr = t1.tnr
+                  AND t2.date > t1.date
+                ORDER BY t2.date ASC LIMIT 1) AS forward_price
+  FROM pricelist AS t1
+) AS inner_nest
+GROUP BY inner_nest.tnr
+HAVING growth > 20
 
- */
-create or replace view Q7("Date", Code, Volume, PrevPrice, Price, Change, Gain) as
-select a."Date", a.Code, a.Volume, a.Price
-    from asx a
-group by a.Code, a."Date"
-order by a.Code, a."Date"
+    --create or replace view Q7("Date", Code, Volume, PrevPrice, Price, Change, Gain) as ...
+*/
 
 
 
---create or replace view Q8("Date", Code, Volume) as ...
+--Find the most active trading stock (the one with the maximum trading volume; if more than one, output all of them) on every trading day. Order your output by "Date" and then by Code.
 
---create or replace view Q9(Sector, Industry, Number) as ...
+/*
+--First, find the max for each
+create or replace view max_volume("Date", Volume) as
+select "Date", max(Volume)
+from asx
+group by "Date"
 
---create or replace view Q10(Code, Industry) as ...
+create or replace view Q8("Date", Code, Volume) as
+select a."Date", a.Code, a.Volume
+from asx a, max_volume m
+where a."Date" = m."Date" and a.Volume = m.Volume
+group by a."Date", a.Code
+*/
+
+
+
+/*
+--Find the number of companies per Industry. Order your result by Sector and then by Industry.
+create or replace view Q9(Sector, Industry, Number) as
+select c.Sector, c.Industry, count(*)
+from category c
+group by c.Industry, c.Sector
+*/
+
+
+
+--List all the companies (by their Code) that are the only one in their Industry (i.e., no competitors).
+create or replace view Q10(Code, Industry) as
+select c.Code, c.Industry
 
 --create or replace view Q11(Sector, AvgRating) as ...
 
