@@ -119,9 +119,14 @@ from category c join rating r on (c.code = r.code)
 group by c.sector
 */
 
+
 --Output the person names of the executives that are affiliated with more than one company.
 create or replace view Q12(Name) as
-    
+select Person
+from executive
+group by Person
+having count(person) > 1
+
 
 
 --create or replace view Q13(Code, Name, Address, Zip, Sector) as ...
