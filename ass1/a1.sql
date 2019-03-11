@@ -1,22 +1,68 @@
 
 --List all the company names (and countries) that are incorporated outside Australia.
+/*
 CREATE OR REPLACE VIEW Q1(Name, Country) AS
 SELECT c.Name, c.Country
     FROM company c
 WHERE NOT c.Country = 'Australia'
+*/
 
 
---create or replace view Q2(Code) as ...
+--  List all the company codes that have more than five executive members on record (i.e., at least six).
+/*
+create or replace view Q2(Code) as
+select e.Code
+    from executive e
+group by e.code
+having count(e.code) > 5
+*/
 
---create or replace view Q3(Name) as ...
+--List all the company names that are in the sector of "Technology
+/*
+create or replace view Q3(Name) as
+select c.Name
+    from company c join category c2 on (c.code = c2.code)
+where c2.sector = 'Technology'
+*/
 
---create or replace view Q4(Sector, Number) as ...
 
---create or replace view Q5(Name) as ...
+--Find the number of Industries in each Sector
+/*
+create or replace view Q4(Sector, Number) as
+select c.Sector, count(c.industry)
+    from category c
+group by c.sector
+*/
 
--- create or replace view Q6(Name) as ...
+--Find all the executives (i.e., their names) that are affiliated with companies in the sector of "Technology". If an executive is affiliated with more than one company, he/she is counted if one of these companies is in the sector of "Technology".
+/*
+create or replace view Q5(Name) as
+select e.person
+    from executive e join category c on (e.code = c.code)
+where c.sector = 'Technology'
+order by e.person
+*/
+
+/*
+--List all the company names in the sector of "Services" that are located in Australia with the first digit of their zip code being 2.
+create or replace view Q6(Name, Country, Zip) as
+select c.Name, c.Country, c.Zip
+    from company c join category c2 on (c.code = c2.code)
+where c2.sector = 'Services' and c.country = 'Australia' and c.zip ~ '^2[0-9]{3}$'
+*/
+
 
 --create or replace view Q7("Date", Code, Volume, PrevPrice, Price, Change, Gain) as ...
+/*
+
+ */
+create or replace view Q7("Date", Code, Volume, PrevPrice, Price, Change, Gain) as
+select a."Date", a.Code, a.Volume, a.Price
+    from asx a
+group by a.Code, a."Date"
+order by a.Code, a."Date"
+
+
 
 --create or replace view Q8("Date", Code, Volume) as ...
 
