@@ -116,7 +116,9 @@ create or replace view Q11(Sector, AvgRating) as
 select  c.Sector, avg(r.star)
 from category c join rating r on (c.code = r.code)
 group by c.sector
+
 */
+
 
 
 /*
@@ -133,6 +135,7 @@ having count(person) > 1
 --where there are no overseas companies in the same Sector. i.e.,
 --they are in a Sector that all companies there have local Australia address.
 
+/*
 -- Find all companies that are located out of australia
 create or replace view not_in_aust(Code, Country) as
 select c.code, c.country
@@ -152,30 +155,45 @@ select c1.Code, c1.Name, c1.Address, c1.Zip, c2.sector
 from company c1 join category c2 on c1.code = c2.code, sect s
 where c2.sector not in (select * from sect)
 group by c2.sector, c1.code, name, address, zip;
-
-
-
-
-
-/*
-create or replace view Q13(Code, Name, Address, Zip, Sector) as
-select c.Code, c.Name, c.Address, c.Zip, ac.Sector
-from company c, aus_count ac, country_count cc
-where ac.Count = cc.Count and ac.Sector = cc.Sector
-*/
-
--- Now, for each sector, count the number of australia.
-
-/*
-create or replace view Q13(Code, Name, Address, Zip, Sector) as
-select c1.Code, c1.Name, c1.Address, c1.Zip, c2.Sector
-from company c1, category c2, sect_aust_count count1, sect_count_count count2
-group by c2.sector, c1.code
-having (count1.Count = count2.Count);
 */
 
 
---create or replace view Q14(Code, BeginPrice, EndPrice, Change, Gain) as ...
+/*Calculate stock gains based on their prices of the first trading day and last
+trading day (i.e., the oldest "Date" and the most recent "Date" of the records
+stored in the ASX table). Order your result by Gain in descending order and then
+by Code in ascending order.
+*/
+
+
+
+create or replace view start_date(Date, Code) as
+select min("Date"), Code
+from asx
+group by Code;
+
+create or replace view end_date(Date, Code) as
+select max("Date"), Code
+from asx
+group by Code;
+
+create or replace view start_price(StartPrice, Code) as
+select a.price, a.code
+from asx a, start_date sd
+where a.Code = sd.Code and a."Date" = sd.Date;
+
+
+create or replace view end_price(EndPrice, Code) as
+select a.price, a.code
+from asx a, end_date ed
+where a.Code = ed.Code and a."Date" = ed.Date;
+
+
+create or replace view Q14(Code, BeginPrice, EndPrice, Change, Gain) as
+select distinct a.Code, sp.startprice, ep.EndPrice,  (ep.EndPrice - sp.startprice), ((ep.EndPrice - sp.startprice)/(sp.startprice)) * 100 as Gain
+from asx a, start_price sp, end_price ep
+where a.code = sp.code and a.code = ep.Code
+order by Gain desc,  Code asc;
+
 
 --create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as ...
 
