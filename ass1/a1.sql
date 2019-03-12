@@ -164,8 +164,7 @@ stored in the ASX table). Order your result by Gain in descending order and then
 by Code in ascending order.
 */
 
-
-
+/*
 create or replace view start_date(Date, Code) as
 select min("Date"), Code
 from asx
@@ -194,8 +193,61 @@ from asx a, start_price sp, end_price ep
 where a.code = sp.code and a.code = ep.Code
 order by Gain desc,  Code asc;
 
+*/
 
---create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as ...
+
+
+
+/*
+For all the trading records in the ASX table, produce the following statistics as a database view
+(where Gain is measured in percentage). AvgDayGain is defined as the summation of all the daily
+gains (in percentage) then divided by the number of trading days (as noted above, the total number of days here should exclude the first trading day).
+create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
+*/
+--create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
+create or replace view min_price(Code, MinPrice) as
+select Code, min(Price)
+from asx
+group by Code;
+
+create or replace view max_price(Code, MaxPrice) as
+select Code, max(Price)
+from asx
+group by Code;
+
+create or replace view avg_price(Code, AvgPrice) as
+select Code, avg(Price)
+from asx
+group by Code;
+
+create or replace view daily_gain(Code, "Date", Gain) as
+select Code, "Date", LAG(price, 1) over (partition by Code order by "Date")
+from asx;
+/*
+create or replace view max_daily_gain(Code, MaxGain) as
+select Code, max(Gain)
+from daily_gain
+group by Code;
+
+create or replace view min_daily_gain(Code, MinGain) as
+select Code, min(Gain)
+from daily_gain
+group by Code;
+
+create or replace view avg_daily_gain(Code, AvgGain) as
+select Code, sum(dg.gain)/count(dg.code)
+from daily_gain dg
+group by dg.code;
+*/
+
+
+create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
+select a.Code, mp.MinPrice, ap.AvgPrice, mp.MaxPrice, mdg.MinDayGain, adg.AvgDayGain, mdg.MaxDayGain
+from asx a, min_price mp, avg_price ap, max_price mp, min_daily_gain mdg, av
+
+
+
+
 
 --Create a trigger on the Executive table, to check and disallow any insert or update of a Person in the Executive table to be an executive of more than one company. 
 
