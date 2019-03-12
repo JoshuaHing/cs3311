@@ -58,14 +58,31 @@ Price change (in amount, can be negative) and Price gain (in percentage, can be 
  (Note that the first trading day should be excluded in your result.) For example,
  if the PrevPrice is 1.00, Price is 0.85; then Change is -0.15 and Gain is -15.00
  (in percentage but you do not need to print out the percentage sign).
- */
-create or replace view daily_gain(Code, "Date", Gain) as
-select Code, "Date", LAG(price, 1) over (partition by Code order by "Date")
-from asx;
+*/
+-- get rid of the min
 
-create or replace view Q7("Date", Code, Volume, PrevPrice, Price, Change, Gain) asx
+create or replace view min_date(Code, "Date") as
+select Code, min("Date")
+from asx
+group by Code;
 
+create or replace view prev_price(Code, "Date", Prev) as
+select a.Code, a."Date", LAG(price, 1) over (partition by a.Code order by a."Date")
+from asx a;
 
+create or replace view daily_change(Code, "Date", Change) as
+select a.Code, a."Date", price - LAG(price, 1) over (partition by a.Code order by a."Date")
+from asx a;
+
+create or replace view Q7("Date", Code, Volume, PrevPrice, Price, Change, Gain) as
+select a."Date", a.Code, a.Volume, pp.Prev, a.Price, dc.Change, (dc.Change/pp.prev) * 100
+from asx a, prev_price pp, daily_change dc, min_date md
+where a.code = pp.code
+  and a.code = dc.code
+  and a.code = md.code
+  and a."Date" != md."Date"
+  and a."Date" = pp."Date"
+  and a."Date" = dc."Date";
 
 
 --Find the most active trading stock (the one with the maximum trading volume; if more than one, output all of them) on every trading day. Order your output by "Date" and then by Code.
@@ -199,17 +216,18 @@ For all the trading records in the ASX table, produce the following statistics a
 (where Gain is measured in percentage). AvgDayGain is defined as the summation of all the daily
 gains (in percentage) then divided by the number of trading days (as noted above, the total number of days here should exclude the first trading day).
 create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
-*/
---create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
 
+--create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
+*/
 
 
 
 create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
-select a.Code, min(a.price), avg(a.price), max(a.price), min(dg.Gain), sum(dg.Gain)/count(dg.Code), max(dg.Gain)
-from asx a, daily_gain dg
-where a.code = dg.code
+select a.Code, min(a.price), avg(a.price), max(a.price), min(q7.Gain), sum(q7.Gain)/count(q7.code), max(q7.Gain)
+from asx a, q7
+where a.code = q7.code
 group by a.code;
+
 
 
 
