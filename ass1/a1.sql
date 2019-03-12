@@ -133,7 +133,6 @@ having count(person) > 1
 --where there are no overseas companies in the same Sector. i.e.,
 --they are in a Sector that all companies there have local Australia address.
 
-
 -- Find all companies that are located out of australia
 create or replace view not_in_aust(Code, Country) as
 select c.code, c.country
@@ -151,7 +150,10 @@ group by c2.sector;
 create or replace view Q13(Code, Name, Address, Zip, Sector) as
 select c1.Code, c1.Name, c1.Address, c1.Zip, c2.sector
 from company c1 join category c2 on c1.code = c2.code, sect s
-where c2.sector != s.sector;
+where c2.sector not in (select * from sect)
+group by c2.sector, c1.code, name, address, zip;
+
+
 
 
 
