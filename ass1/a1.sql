@@ -61,6 +61,7 @@ Price change (in amount, can be negative) and Price gain (in percentage, can be 
 */
 -- get rid of the min
 
+/*
 create or replace view min_date(Code, "Date") as
 select Code, min("Date")
 from asx
@@ -83,6 +84,7 @@ where a.code = pp.code
   and a."Date" != md."Date"
   and a."Date" = pp."Date"
   and a."Date" = dc."Date";
+*/
 
 
 --Find the most active trading stock (the one with the maximum trading volume; if more than one, output all of them) on every trading day. Order your output by "Date" and then by Code.
@@ -220,20 +222,37 @@ create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDa
 --create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
 */
 
-
+/*
 
 create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
 select a.Code, min(a.price), avg(a.price), max(a.price), min(q7.Gain), sum(q7.Gain)/count(q7.code), max(q7.Gain)
 from asx a, q7
 where a.code = q7.code
 group by a.code;
+*/
+
+/*
+create or replace function
+    Q16_procedure() returns trigger
+as $$
+declare
+    num_companies int;
+begin
+    select count(*) into num_companies from executive where person = new.person;
+    if num_companies > 1
+        then raise exception 'Executive must work for one company only.';
+    end if ;
+    return new;
+end;
+$$ language plpgsql;
 
 
+--Create a trigger on the Executive table, to check and disallow any insert or update of a Person in the Executive table to be an executive of more than one company.
+create trigger Q16
+    after insert or update on executive
+for each row execute procedure Q16_procedure();
 
-
-
-
---Create a trigger on the Executive table, to check and disallow any insert or update of a Person in the Executive table to be an executive of more than one company. 
+*/
 
 --Suppose more stock trading data are incoming into the ASX table. Create a trigger to increase the stock's rating (as Star's) to 5 when the stock has made a maximum daily price gain (when compared with the price on the previous trading day) in percentage within its sector. For example, for a given day and a given sector, if Stock A has the maximum price gain in the sector, its rating should then be updated to 5. If it happens to have more than one stock with the same maximum price gain, update all these stocks' ratings to 5. Otherwise, decrease the stock's rating to 1 when the stock has performed the worst in the sector in terms of daily percentage price gain. If there are more than one record of rating for a given stock that need to be updated, update (not insert) all these records. 
 
