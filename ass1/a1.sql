@@ -87,6 +87,8 @@ where a.code = pp.code
 */
 
 
+
+
 --Find the most active trading stock (the one with the maximum trading volume; if more than one, output all of them) on every trading day. Order your output by "Date" and then by Code.
 
 /*
@@ -254,6 +256,46 @@ for each row execute procedure Q16_procedure();
 
 */
 
---Suppose more stock trading data are incoming into the ASX table. Create a trigger to increase the stock's rating (as Star's) to 5 when the stock has made a maximum daily price gain (when compared with the price on the previous trading day) in percentage within its sector. For example, for a given day and a given sector, if Stock A has the maximum price gain in the sector, its rating should then be updated to 5. If it happens to have more than one stock with the same maximum price gain, update all these stocks' ratings to 5. Otherwise, decrease the stock's rating to 1 when the stock has performed the worst in the sector in terms of daily percentage price gain. If there are more than one record of rating for a given stock that need to be updated, update (not insert) all these records. 
+/*
+--Suppose more stock trading data are incoming into the ASX table.
+Create a trigger to increase the stock's rating (as Star's) to 5 when the stock
+ has made a maximum daily price gain (when compared with the price on the previous trading day)
+  in percentage within its sector. For example, for a given day and a given sector,
+  if Stock A has the maximum price gain in the sector, its rating should then be updated to 5.
+   If it happens to have more than one stock with the same maximum price gain, update all these stocks'
+   ratings to 5. Otherwise, decrease the stock's rating to 1 when the stock has performed the worst in
+   the sector in terms of daily percentage price gain. If there are more than one record of rating for
+   a given stock that need to be updated, update (not insert) all these records.
+*/
+
+-- First, access the gain table and order by sector...?
+create or replace view daily_gain_by_sector(Sector, "Date", Code, gain) as
+select c.Sector, q7."Date", c.Code, q7.gain
+from Q7 as q7 join category c on (q7.code = c.code);
+
+-- Then, let's get the max gain for that day.
+create or replace view daily_maxgain_by_sector(Sector, "Date", max_gain) as
+select sector, "Date", max(gain)
+from daily_gain_by_sector
+group by "Date", sector
+order by sector, "Date";
+
+-- Now, let's create a trigger
+
+create or replace function
+    Q17_procedure() returns trigger
+as $$
+declare
+
+begin
+
+end;
+$$ language plpgsql;
+
+
+create trigger Q17
+    after insert or update on asx
+for each row execute procedure Q17_procedure();
+
 
 --Stock price and trading volume data are usually incoming data and seldom involve updating existing data. However, updates are allowed in order to correct data errors. All such updates (instead of data insertion) are logged and stored in the ASXLog table. Create a trigger to log any updates on Price and/or Voume in the ASX table and log these updates (only for update, not inserts) into the ASXLog table. Here we assume that Date and Code cannot be corrected and will be the same as their original, old values. Timestamp is the date and time that the correction takes place. Note that it is also possible that a record is corrected more than once, i.e., same Date and Code but different Timestamp.
