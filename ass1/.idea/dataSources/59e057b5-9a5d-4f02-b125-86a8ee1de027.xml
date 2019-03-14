@@ -9,7 +9,7 @@
       <Comment>default administrative connection database</Comment>
       <StateNumber>567</StateNumber>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>2306</IntrospectionStateNumber>
+      <IntrospectionStateNumber>2420</IntrospectionStateNumber>
       <Current>1</Current>
       <Visible>1</Visible>
     </database>
@@ -96,7 +96,7 @@
       <Comment>standard public schema</Comment>
       <StateNumber>360</StateNumber>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>2307</IntrospectionStateNumber>
+      <IntrospectionStateNumber>2421</IntrospectionStateNumber>
       <Current>1</Current>
       <Visible>1</Visible>
     </schema>
@@ -203,58 +203,64 @@
     <view id="33" parent="17" name="daily_gain_by_sector">
       <ObjectId>17041</ObjectId>
       <Owner>postgres</Owner>
-      <StateNumber>2304</StateNumber>
+      <StateNumber>2330</StateNumber>
       <SourceTextLength>116</SourceTextLength>
     </view>
     <view id="34" parent="17" name="daily_maxgain_by_sector">
       <ObjectId>17045</ObjectId>
       <Owner>postgres</Owner>
-      <StateNumber>2305</StateNumber>
+      <StateNumber>2331</StateNumber>
       <SourceTextLength>280</SourceTextLength>
     </view>
-    <view id="35" parent="17" name="min_date">
+    <view id="35" parent="17" name="daily_mingain_by_sector">
+      <ObjectId>17054</ObjectId>
+      <Owner>postgres</Owner>
+      <StateNumber>2332</StateNumber>
+      <SourceTextLength>280</SourceTextLength>
+    </view>
+    <view id="36" parent="17" name="min_date">
       <ObjectId>16939</ObjectId>
       <Owner>postgres</Owner>
       <StateNumber>2091</StateNumber>
       <SourceTextLength>78</SourceTextLength>
     </view>
-    <view id="36" parent="17" name="prev_price">
+    <view id="37" parent="17" name="prev_price">
       <ObjectId>16943</ObjectId>
       <Owner>postgres</Owner>
       <StateNumber>2092</StateNumber>
       <SourceTextLength>115</SourceTextLength>
     </view>
-    <view id="37" parent="17" name="q15">
+    <view id="38" parent="17" name="q15">
       <ObjectId>16959</ObjectId>
       <Owner>postgres</Owner>
       <StateNumber>2107</StateNumber>
       <SourceTextLength>296</SourceTextLength>
     </view>
-    <view id="38" parent="17" name="q7">
+    <view id="39" parent="17" name="q7">
       <ObjectId>16951</ObjectId>
       <Owner>postgres</Owner>
       <StateNumber>2094</StateNumber>
       <SourceTextLength>377</SourceTextLength>
     </view>
-    <view id="39" parent="17" name="q7_1">
+    <view id="40" parent="17" name="q7_1">
       <ObjectId>16883</ObjectId>
       <Owner>postgres</Owner>
       <StateNumber>1838</StateNumber>
       <SourceTextLength>53</SourceTextLength>
     </view>
-    <view id="40" parent="17" name="q7_2">
+    <view id="41" parent="17" name="q7_2">
       <ObjectId>16887</ObjectId>
       <Owner>postgres</Owner>
       <StateNumber>1839</StateNumber>
       <SourceTextLength>465</SourceTextLength>
     </view>
-    <view id="41" parent="17" name="q8">
+    <view id="42" parent="17" name="q8">
       <ObjectId>16891</ObjectId>
       <Owner>postgres</Owner>
       <StateNumber>1840</StateNumber>
       <SourceTextLength>199</SourceTextLength>
     </view>
-    <routine id="42" parent="17" name="q16_procedure">
+    <routine id="43" parent="17" name="q16_procedure">
       <ObjectId>16974</ObjectId>
       <Owner>postgres</Owner>
       <SourceTextLength>252</SourceTextLength>
@@ -265,42 +271,53 @@
       <RoutineKind>function</RoutineKind>
       <Cost>100.0</Cost>
     </routine>
-    <column id="43" parent="26" name="Date">
+    <routine id="44" parent="17" name="q17_procedure">
+      <ObjectId>17074</ObjectId>
+      <Owner>postgres</Owner>
+      <SourceTextLength>1186</SourceTextLength>
+      <StateNumber>2418</StateNumber>
+      <VolatilityKind>volatile</VolatilityKind>
+      <ResultsDefinition>trigger</ResultsDefinition>
+      <LanguageName>plpgsql</LanguageName>
+      <RoutineKind>function</RoutineKind>
+      <Cost>100.0</Cost>
+    </routine>
+    <column id="45" parent="26" name="Date">
       <Position>1</Position>
       <DataType>date|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>575</StateNumber>
       <TypeId>1082</TypeId>
     </column>
-    <column id="44" parent="26" name="code">
+    <column id="46" parent="26" name="code">
       <Position>2</Position>
       <DataType>char(3)|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>575</StateNumber>
       <TypeId>1042</TypeId>
     </column>
-    <column id="45" parent="26" name="volume">
+    <column id="47" parent="26" name="volume">
       <Position>3</Position>
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>575</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="46" parent="26" name="price">
+    <column id="48" parent="26" name="price">
       <Position>4</Position>
       <DataType>numeric|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>575</StateNumber>
       <TypeId>1700</TypeId>
     </column>
-    <index id="47" parent="26" name="asx_pkey">
+    <index id="49" parent="26" name="asx_pkey">
       <ObjectId>16437</ObjectId>
       <StateNumber>575</StateNumber>
       <ColNames>Date
 code</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="48" parent="26" name="asx_pkey">
+    <key id="50" parent="26" name="asx_pkey">
       <ObjectId>16438</ObjectId>
       <StateNumber>575</StateNumber>
       <ColNames>Date
@@ -308,7 +325,7 @@ code</ColNames>
       <UnderlyingIndexName>asx_pkey</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="49" parent="26" name="asx_code_fkey">
+    <foreign-key id="51" parent="26" name="asx_code_fkey">
       <ObjectId>16439</ObjectId>
       <StateNumber>575</StateNumber>
       <ColNames>code</ColNames>
@@ -318,54 +335,62 @@ code</ColNames>
       <RefKeyName>company_pkey</RefKeyName>
       <RefColNames>code</RefColNames>
     </foreign-key>
-    <check id="50" parent="26" name="asx_price_check">
+    <check id="52" parent="26" name="asx_price_check">
       <ObjectId>16433</ObjectId>
       <StateNumber>575</StateNumber>
       <ColNames>price</ColNames>
       <Predicate>price &gt; 0.0</Predicate>
     </check>
-    <check id="51" parent="26" name="asx_volume_check">
+    <check id="53" parent="26" name="asx_volume_check">
       <ObjectId>16432</ObjectId>
       <StateNumber>575</StateNumber>
       <ColNames>volume</ColNames>
       <Predicate>volume &gt;= 0</Predicate>
     </check>
-    <column id="52" parent="27" name="Timestamp">
+    <trigger id="54" parent="26" name="q17">
+      <ObjectId>17075</ObjectId>
+      <StateNumber>2419</StateNumber>
+      <Turn>after-row</Turn>
+      <Events>IU</Events>
+      <FireMode>origin</FireMode>
+      <CallRoutineId>17074</CallRoutineId>
+    </trigger>
+    <column id="55" parent="27" name="Timestamp">
       <Position>1</Position>
       <DataType>timestamp|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>577</StateNumber>
       <TypeId>1114</TypeId>
     </column>
-    <column id="53" parent="27" name="Date">
+    <column id="56" parent="27" name="Date">
       <Position>2</Position>
       <DataType>date|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>577</StateNumber>
       <TypeId>1082</TypeId>
     </column>
-    <column id="54" parent="27" name="code">
+    <column id="57" parent="27" name="code">
       <Position>3</Position>
       <DataType>char(3)|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>577</StateNumber>
       <TypeId>1042</TypeId>
     </column>
-    <column id="55" parent="27" name="oldvolume">
+    <column id="58" parent="27" name="oldvolume">
       <Position>4</Position>
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>577</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="56" parent="27" name="oldprice">
+    <column id="59" parent="27" name="oldprice">
       <Position>5</Position>
       <DataType>numeric|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>577</StateNumber>
       <TypeId>1700</TypeId>
     </column>
-    <index id="57" parent="27" name="asxlog_pkey">
+    <index id="60" parent="27" name="asxlog_pkey">
       <ObjectId>16462</ObjectId>
       <StateNumber>577</StateNumber>
       <ColNames>Timestamp
@@ -373,7 +398,7 @@ Date
 code</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="58" parent="27" name="asxlog_pkey">
+    <key id="61" parent="27" name="asxlog_pkey">
       <ObjectId>16463</ObjectId>
       <StateNumber>577</StateNumber>
       <ColNames>Timestamp
@@ -382,7 +407,7 @@ code</ColNames>
       <UnderlyingIndexName>asxlog_pkey</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="59" parent="27" name="asxlog_code_fkey">
+    <foreign-key id="62" parent="27" name="asxlog_code_fkey">
       <ObjectId>16464</ObjectId>
       <StateNumber>577</StateNumber>
       <ColNames>code</ColNames>
@@ -392,53 +417,53 @@ code</ColNames>
       <RefKeyName>company_pkey</RefKeyName>
       <RefColNames>code</RefColNames>
     </foreign-key>
-    <check id="60" parent="27" name="asxlog_oldprice_check">
+    <check id="63" parent="27" name="asxlog_oldprice_check">
       <ObjectId>16458</ObjectId>
       <StateNumber>577</StateNumber>
       <ColNames>oldprice</ColNames>
       <Predicate>oldprice &gt; 0.0</Predicate>
     </check>
-    <check id="61" parent="27" name="asxlog_oldvolume_check">
+    <check id="64" parent="27" name="asxlog_oldvolume_check">
       <ObjectId>16457</ObjectId>
       <StateNumber>577</StateNumber>
       <ColNames>oldvolume</ColNames>
       <Predicate>oldvolume &gt;= 0</Predicate>
     </check>
-    <column id="62" parent="28" name="code">
+    <column id="65" parent="28" name="code">
       <Position>1</Position>
       <DataType>char(3)|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>574</StateNumber>
       <TypeId>1042</TypeId>
     </column>
-    <column id="63" parent="28" name="sector">
+    <column id="66" parent="28" name="sector">
       <Position>2</Position>
       <DataType>varchar(40)|0s</DataType>
       <StateNumber>574</StateNumber>
       <DefaultExpression>NULL::character varying</DefaultExpression>
       <TypeId>1043</TypeId>
     </column>
-    <column id="64" parent="28" name="industry">
+    <column id="67" parent="28" name="industry">
       <Position>3</Position>
       <DataType>varchar(80)|0s</DataType>
       <StateNumber>574</StateNumber>
       <DefaultExpression>NULL::character varying</DefaultExpression>
       <TypeId>1043</TypeId>
     </column>
-    <index id="65" parent="28" name="category_pkey">
+    <index id="68" parent="28" name="category_pkey">
       <ObjectId>16422</ObjectId>
       <StateNumber>574</StateNumber>
       <ColNames>code</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="66" parent="28" name="category_pkey">
+    <key id="69" parent="28" name="category_pkey">
       <ObjectId>16423</ObjectId>
       <StateNumber>574</StateNumber>
       <ColNames>code</ColNames>
       <UnderlyingIndexName>category_pkey</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="67" parent="28" name="category_code_fkey">
+    <foreign-key id="70" parent="28" name="category_code_fkey">
       <ObjectId>16424</ObjectId>
       <StateNumber>574</StateNumber>
       <ColNames>code</ColNames>
@@ -448,81 +473,81 @@ code</ColNames>
       <RefKeyName>company_pkey</RefKeyName>
       <RefColNames>code</RefColNames>
     </foreign-key>
-    <column id="68" parent="29" name="code">
+    <column id="71" parent="29" name="code">
       <Position>1</Position>
       <DataType>char(3)|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>572</StateNumber>
       <TypeId>1042</TypeId>
     </column>
-    <column id="69" parent="29" name="name">
+    <column id="72" parent="29" name="name">
       <Position>2</Position>
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>572</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="70" parent="29" name="address">
+    <column id="73" parent="29" name="address">
       <Position>3</Position>
       <DataType>text|0s</DataType>
       <StateNumber>572</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="71" parent="29" name="zip">
+    <column id="74" parent="29" name="zip">
       <Position>4</Position>
       <DataType>varchar(10)|0s</DataType>
       <StateNumber>572</StateNumber>
       <DefaultExpression>NULL::character varying</DefaultExpression>
       <TypeId>1043</TypeId>
     </column>
-    <column id="72" parent="29" name="country">
+    <column id="75" parent="29" name="country">
       <Position>5</Position>
       <DataType>varchar(40)|0s</DataType>
       <StateNumber>572</StateNumber>
       <DefaultExpression>NULL::character varying</DefaultExpression>
       <TypeId>1043</TypeId>
     </column>
-    <index id="73" parent="29" name="company_pkey">
+    <index id="76" parent="29" name="company_pkey">
       <ObjectId>16402</ObjectId>
       <StateNumber>572</StateNumber>
       <ColNames>code</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="74" parent="29" name="company_pkey">
+    <key id="77" parent="29" name="company_pkey">
       <ObjectId>16403</ObjectId>
       <StateNumber>572</StateNumber>
       <ColNames>code</ColNames>
       <UnderlyingIndexName>company_pkey</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <check id="75" parent="29" name="company_code_check">
+    <check id="78" parent="29" name="company_code_check">
       <ObjectId>16398</ObjectId>
       <StateNumber>572</StateNumber>
       <ColNames>code</ColNames>
       <Predicate>code ~ &apos;[A-Z]{3}&apos;::text</Predicate>
     </check>
-    <column id="76" parent="30" name="code">
+    <column id="79" parent="30" name="code">
       <Position>1</Position>
       <DataType>char(3)|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>573</StateNumber>
       <TypeId>1042</TypeId>
     </column>
-    <column id="77" parent="30" name="person">
+    <column id="80" parent="30" name="person">
       <Position>2</Position>
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>573</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <index id="78" parent="30" name="executive_pkey">
+    <index id="81" parent="30" name="executive_pkey">
       <ObjectId>16410</ObjectId>
       <StateNumber>573</StateNumber>
       <ColNames>code
 person</ColNames>
       <Unique>1</Unique>
     </index>
-    <key id="79" parent="30" name="executive_pkey">
+    <key id="82" parent="30" name="executive_pkey">
       <ObjectId>16411</ObjectId>
       <StateNumber>573</StateNumber>
       <ColNames>code
@@ -530,7 +555,7 @@ person</ColNames>
       <UnderlyingIndexName>executive_pkey</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="80" parent="30" name="executive_code_fkey">
+    <foreign-key id="83" parent="30" name="executive_code_fkey">
       <ObjectId>16412</ObjectId>
       <StateNumber>573</StateNumber>
       <ColNames>code</ColNames>
@@ -540,7 +565,7 @@ person</ColNames>
       <RefKeyName>company_pkey</RefKeyName>
       <RefColNames>code</RefColNames>
     </foreign-key>
-    <trigger id="81" parent="30" name="q16">
+    <trigger id="84" parent="30" name="q16">
       <ObjectId>16975</ObjectId>
       <StateNumber>2177</StateNumber>
       <Turn>after-row</Turn>
@@ -548,20 +573,20 @@ person</ColNames>
       <FireMode>origin</FireMode>
       <CallRoutineId>16974</CallRoutineId>
     </trigger>
-    <column id="82" parent="31" name="code">
+    <column id="85" parent="31" name="code">
       <Position>1</Position>
       <DataType>char(3)|0s</DataType>
       <StateNumber>576</StateNumber>
       <TypeId>1042</TypeId>
     </column>
-    <column id="83" parent="31" name="star">
+    <column id="86" parent="31" name="star">
       <Position>2</Position>
       <DataType>integer|0s</DataType>
       <StateNumber>576</StateNumber>
       <DefaultExpression>3</DefaultExpression>
       <TypeId>23</TypeId>
     </column>
-    <foreign-key id="84" parent="31" name="rating_code_fkey">
+    <foreign-key id="87" parent="31" name="rating_code_fkey">
       <ObjectId>16449</ObjectId>
       <StateNumber>576</StateNumber>
       <ColNames>code</ColNames>
@@ -571,233 +596,252 @@ person</ColNames>
       <RefKeyName>company_pkey</RefKeyName>
       <RefColNames>code</RefColNames>
     </foreign-key>
-    <check id="85" parent="31" name="rating_star_check">
+    <check id="88" parent="31" name="rating_star_check">
       <ObjectId>16448</ObjectId>
       <StateNumber>576</StateNumber>
       <ColNames>star</ColNames>
       <Predicate>(star &gt; 0) AND (star &lt; 6)</Predicate>
     </check>
-    <column id="86" parent="32" name="code">
+    <column id="89" parent="32" name="code">
       <Position>1</Position>
       <DataType>char(3)|0s</DataType>
       <StateNumber>2087</StateNumber>
     </column>
-    <column id="87" parent="32" name="Date">
+    <column id="90" parent="32" name="Date">
       <Position>2</Position>
       <DataType>date|0s</DataType>
       <StateNumber>2087</StateNumber>
     </column>
-    <column id="88" parent="32" name="change">
+    <column id="91" parent="32" name="change">
       <Position>3</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2087</StateNumber>
     </column>
-    <column id="89" parent="33" name="sector">
+    <column id="92" parent="33" name="sector">
       <Position>1</Position>
       <DataType>varchar(40)|0s</DataType>
       <StateNumber>2304</StateNumber>
     </column>
-    <column id="90" parent="33" name="Date">
+    <column id="93" parent="33" name="Date">
       <Position>2</Position>
       <DataType>date|0s</DataType>
       <StateNumber>2304</StateNumber>
     </column>
-    <column id="91" parent="33" name="code">
+    <column id="94" parent="33" name="code">
       <Position>3</Position>
       <DataType>char(3)|0s</DataType>
       <StateNumber>2304</StateNumber>
     </column>
-    <column id="92" parent="33" name="gain">
+    <column id="95" parent="33" name="gain">
       <Position>4</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2304</StateNumber>
     </column>
-    <column id="93" parent="34" name="sector">
+    <column id="96" parent="34" name="sector">
       <Position>1</Position>
       <DataType>varchar(40)|0s</DataType>
       <StateNumber>2305</StateNumber>
     </column>
-    <column id="94" parent="34" name="Date">
+    <column id="97" parent="34" name="Date">
       <Position>2</Position>
       <DataType>date|0s</DataType>
       <StateNumber>2305</StateNumber>
     </column>
-    <column id="95" parent="34" name="max_gain">
+    <column id="98" parent="34" name="max_gain">
       <Position>3</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2305</StateNumber>
     </column>
-    <column id="96" parent="35" name="code">
+    <column id="99" parent="35" name="sector">
+      <Position>1</Position>
+      <DataType>varchar(40)|0s</DataType>
+      <StateNumber>2332</StateNumber>
+    </column>
+    <column id="100" parent="35" name="Date">
+      <Position>2</Position>
+      <DataType>date|0s</DataType>
+      <StateNumber>2332</StateNumber>
+    </column>
+    <column id="101" parent="35" name="min_gain">
+      <Position>3</Position>
+      <DataType>numeric|0s</DataType>
+      <StateNumber>2332</StateNumber>
+    </column>
+    <column id="102" parent="36" name="code">
       <Position>1</Position>
       <DataType>char(3)|0s</DataType>
       <StateNumber>2084</StateNumber>
     </column>
-    <column id="97" parent="35" name="Date">
+    <column id="103" parent="36" name="Date">
       <Position>2</Position>
       <DataType>date|0s</DataType>
       <StateNumber>2084</StateNumber>
     </column>
-    <column id="98" parent="36" name="code">
+    <column id="104" parent="37" name="code">
       <Position>1</Position>
       <DataType>char(3)|0s</DataType>
       <StateNumber>2086</StateNumber>
     </column>
-    <column id="99" parent="36" name="Date">
+    <column id="105" parent="37" name="Date">
       <Position>2</Position>
       <DataType>date|0s</DataType>
       <StateNumber>2086</StateNumber>
     </column>
-    <column id="100" parent="36" name="prev">
+    <column id="106" parent="37" name="prev">
       <Position>3</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2086</StateNumber>
     </column>
-    <column id="101" parent="37" name="code">
+    <column id="107" parent="38" name="code">
       <Position>1</Position>
       <DataType>char(3)|0s</DataType>
       <StateNumber>2107</StateNumber>
     </column>
-    <column id="102" parent="37" name="minprice">
+    <column id="108" parent="38" name="minprice">
       <Position>2</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2107</StateNumber>
     </column>
-    <column id="103" parent="37" name="avgprice">
+    <column id="109" parent="38" name="avgprice">
       <Position>3</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2107</StateNumber>
     </column>
-    <column id="104" parent="37" name="maxprice">
+    <column id="110" parent="38" name="maxprice">
       <Position>4</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2107</StateNumber>
     </column>
-    <column id="105" parent="37" name="mindaygain">
+    <column id="111" parent="38" name="mindaygain">
       <Position>5</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2107</StateNumber>
     </column>
-    <column id="106" parent="37" name="avgdaygain">
+    <column id="112" parent="38" name="avgdaygain">
       <Position>6</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2107</StateNumber>
     </column>
-    <column id="107" parent="37" name="maxdaygain">
+    <column id="113" parent="38" name="maxdaygain">
       <Position>7</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2107</StateNumber>
     </column>
-    <column id="108" parent="38" name="Date">
+    <column id="114" parent="39" name="Date">
       <Position>1</Position>
       <DataType>date|0s</DataType>
       <StateNumber>2094</StateNumber>
     </column>
-    <column id="109" parent="38" name="code">
+    <column id="115" parent="39" name="code">
       <Position>2</Position>
       <DataType>char(3)|0s</DataType>
       <StateNumber>2094</StateNumber>
     </column>
-    <column id="110" parent="38" name="volume">
+    <column id="116" parent="39" name="volume">
       <Position>3</Position>
       <DataType>integer|0s</DataType>
       <StateNumber>2094</StateNumber>
     </column>
-    <column id="111" parent="38" name="prevprice">
+    <column id="117" parent="39" name="prevprice">
       <Position>4</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2094</StateNumber>
     </column>
-    <column id="112" parent="38" name="price">
+    <column id="118" parent="39" name="price">
       <Position>5</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2094</StateNumber>
     </column>
-    <column id="113" parent="38" name="change">
+    <column id="119" parent="39" name="change">
       <Position>6</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2094</StateNumber>
     </column>
-    <column id="114" parent="38" name="gain">
+    <column id="120" parent="39" name="gain">
       <Position>7</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>2094</StateNumber>
     </column>
-    <column id="115" parent="39" name="Date">
+    <column id="121" parent="40" name="Date">
       <Position>1</Position>
       <DataType>date|0s</DataType>
       <StateNumber>1838</StateNumber>
     </column>
-    <column id="116" parent="40" name="Date">
+    <column id="122" parent="41" name="Date">
       <Position>1</Position>
       <DataType>date|0s</DataType>
       <StateNumber>1839</StateNumber>
     </column>
-    <column id="117" parent="40" name="code">
+    <column id="123" parent="41" name="code">
       <Position>2</Position>
       <DataType>char(3)|0s</DataType>
       <StateNumber>1839</StateNumber>
     </column>
-    <column id="118" parent="40" name="volume">
+    <column id="124" parent="41" name="volume">
       <Position>3</Position>
       <DataType>integer|0s</DataType>
       <StateNumber>1839</StateNumber>
     </column>
-    <column id="119" parent="40" name="prevprice">
+    <column id="125" parent="41" name="prevprice">
       <Position>4</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>1839</StateNumber>
     </column>
-    <column id="120" parent="40" name="price">
+    <column id="126" parent="41" name="price">
       <Position>5</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>1839</StateNumber>
     </column>
-    <column id="121" parent="40" name="change">
+    <column id="127" parent="41" name="change">
       <Position>6</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>1839</StateNumber>
     </column>
-    <column id="122" parent="40" name="gain">
+    <column id="128" parent="41" name="gain">
       <Position>7</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>1839</StateNumber>
     </column>
-    <column id="123" parent="41" name="Date">
+    <column id="129" parent="42" name="Date">
       <Position>1</Position>
       <DataType>date|0s</DataType>
       <StateNumber>1840</StateNumber>
     </column>
-    <column id="124" parent="41" name="code">
+    <column id="130" parent="42" name="code">
       <Position>2</Position>
       <DataType>char(3)|0s</DataType>
       <StateNumber>1840</StateNumber>
     </column>
-    <column id="125" parent="41" name="volume">
+    <column id="131" parent="42" name="volume">
       <Position>3</Position>
       <DataType>integer|0s</DataType>
       <StateNumber>1840</StateNumber>
     </column>
-    <column id="126" parent="41" name="prevprice">
+    <column id="132" parent="42" name="prevprice">
       <Position>4</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>1840</StateNumber>
     </column>
-    <column id="127" parent="41" name="price">
+    <column id="133" parent="42" name="price">
       <Position>5</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>1840</StateNumber>
     </column>
-    <column id="128" parent="41" name="change">
+    <column id="134" parent="42" name="change">
       <Position>6</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>1840</StateNumber>
     </column>
-    <column id="129" parent="41" name="gain">
+    <column id="135" parent="42" name="gain">
       <Position>7</Position>
       <DataType>numeric|0s</DataType>
       <StateNumber>1840</StateNumber>
     </column>
-    <argument id="130" parent="42">
+    <argument id="136" parent="43">
+      <ArgumentDirection>R</ArgumentDirection>
+      <DataType>trigger|0s</DataType>
+    </argument>
+    <argument id="137" parent="44">
       <ArgumentDirection>R</ArgumentDirection>
       <DataType>trigger|0s</DataType>
     </argument>

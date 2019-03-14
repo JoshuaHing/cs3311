@@ -280,15 +280,51 @@ from daily_gain_by_sector
 group by "Date", sector
 order by sector, "Date";
 
--- Now, let's create a trigger
 
+create or replace view daily_mingain_by_sector(Sector, "Date", min_gain) as
+select sector, "Date", min(gain)
+from daily_gain_by_sector
+group by "Date", sector
+order by sector, "Date";
+
+-- Now, let's create a trigger
+-- if the entry that i'm adding or updating has the max
+-- update rating to 5
+-- in that case, we need max
+-- for each sector?
 create or replace function
     Q17_procedure() returns trigger
 as $$
 declare
-
+    daily_max float;
+    daily_min float;
+    curr_gain float;
+    company_sector varchar(40);
 begin
+    select sector into company_sector from category where new.code = code;
+    select max_gain into daily_max from daily_maxgain_by_sector dgs1 where company_sector = dgs1.sector and "Date" = dgs1."Date";
+    select min_gain into daily_min from daily_mingain_by_sector dgs2 where company_sector = dgs2.sector and "Date" = dgs2."Date";
 
+    -- get the gain of the company in question
+    select gain into curr_gain from daily_gain_by_sector where new.code = code and new."Date" = "Date";
+
+    if curr_gain >= daily_max
+    then
+        update rating set star = 5
+        where code = new.code;
+        raise notice 'Changing % to 5 star rating...', new.code;
+    end if;
+
+    if curr_gain <= daily_min
+    then
+        update rating set star = 1
+        where code = new.code;
+        raise notice 'Changing % to 1 star rating...', new.code;
+    end if;
+
+    return new;
+
+    -- Now, calculate the gain of the updated entry...?
 end;
 $$ language plpgsql;
 
@@ -296,6 +332,8 @@ $$ language plpgsql;
 create trigger Q17
     after insert or update on asx
 for each row execute procedure Q17_procedure();
+
+
 
 
 --Stock price and trading volume data are usually incoming data and seldom involve updating existing data. However, updates are allowed in order to correct data errors. All such updates (instead of data insertion) are logged and stored in the ASXLog table. Create a trigger to log any updates on Price and/or Voume in the ASX table and log these updates (only for update, not inserts) into the ASXLog table. Here we assume that Date and Code cannot be corrected and will be the same as their original, old values. Timestamp is the date and time that the correction takes place. Note that it is also possible that a record is corrected more than once, i.e., same Date and Code but different Timestamp.
