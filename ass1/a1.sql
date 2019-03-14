@@ -1,67 +1,41 @@
 
---List all the company names (and countries) that are incorporated outside Australia.
-/*
-CREATE OR REPLACE VIEW Q1(Name, Country) AS
-SELECT c.Name, c.Country
-    FROM company c
-WHERE NOT c.Country = 'Australia'
-*/
+
+create or replace view Q1(Name, Country) AS
+select Name, Country
+from company
+where not Country = 'Australia';
 
 
---  List all the company codes that have more than five executive members on record (i.e., at least six).
-/*
 create or replace view Q2(Code) as
-select e.Code
-    from executive e
-group by e.code
-having count(e.code) > 5
-*/
+select Code
+from executive e
+group by Code
+having count(Code) > 5;
 
---List all the company names that are in the sector of "Technology
-/*
 create or replace view Q3(Name) as
 select c.Name
-    from company c join category c2 on (c.code = c2.code)
-where c2.sector = 'Technology'
-*/
+from company c join category c2 on (c.code = c2.code)
+where c2.sector = 'Technology';
 
 
---Find the number of Industries in each Sector
-/*
-create or replace view Q4(Sector, Number) as
-select c.Sector, count(c.industry)
-    from category c
-group by c.sector
-*/
+create or replace view Q4(Sector) as
+select Sector, count(distinct Industry)
+from category
+group by Sector;
 
---Find all the executives (i.e., their names) that are affiliated with companies in the sector of "Technology". If an executive is affiliated with more than one company, he/she is counted if one of these companies is in the sector of "Technology".
-/*
+
 create or replace view Q5(Name) as
 select e.person
-    from executive e join category c on (e.code = c.code)
-where c.sector = 'Technology'
-order by e.person
-*/
+from executive e join category c on (e.code = c.code)
+where c.sector = 'Technology';
 
-/*
---List all the company names in the sector of "Services" that are located in Australia with the first digit of their zip code being 2.
 create or replace view Q6(Name, Country, Zip) as
 select c.Name, c.Country, c.Zip
-    from company c join category c2 on (c.code = c2.code)
-where c2.sector = 'Services' and c.country = 'Australia' and c.zip ~ '^2[0-9]{3}$'
-*/
+from company c join category c2 on (c.code = c2.code)
+where c2.sector = 'Services' and c.country = 'Australia' and c.zip ~ '^2[0-9]{3}$';
 
-/*
 
-Create a database view of the ASX table that contains previous Price,
-Price change (in amount, can be negative) and Price gain (in percentage, can be negative).
- (Note that the first trading day should be excluded in your result.) For example,
- if the PrevPrice is 1.00, Price is 0.85; then Change is -0.15 and Gain is -15.00
- (in percentage but you do not need to print out the percentage sign).
-*/
--- get rid of the min
 
-/*
 create or replace view min_date(Code, "Date") as
 select Code, min("Date")
 from asx
@@ -84,82 +58,63 @@ where a.code = pp.code
   and a."Date" != md."Date"
   and a."Date" = pp."Date"
   and a."Date" = dc."Date";
-*/
 
 
 
 
---Find the most active trading stock (the one with the maximum trading volume; if more than one, output all of them) on every trading day. Order your output by "Date" and then by Code.
 
-/*
---First, find the max for each
 create or replace view max_volume("Date", Volume) as
 select "Date", max(Volume)
 from asx
-group by "Date"
+group by asx."Date";
 
 create or replace view Q8("Date", Code, Volume) as
 select a."Date", a.Code, a.Volume
 from asx a, max_volume m
 where a."Date" = m."Date" and a.Volume = m.Volume
-group by a."Date", a.Code
-*/
+group by a."Date", a.Code;
 
 
-/*
---Find the number of companies per Industry. Order your result by Sector and then by Industry.
+
+
 create or replace view Q9(Sector, Industry, Number) as
-select c.Sector, c.Industry, count(*)
-from category c
-group by c.Industry, c.Sector
-*/
+select Sector, Industry, count(*)
+from category
+group by Industry, Sector
+order by Sector, Industry;
 
 
-/*
---List all the companies (by their Code) that are the only one in their Industry (i.e., no competitors).
+create or replace view count_industry(Industry, Count) as
+select Industry, Count(*)
+from category
+group by Industry;
+
 create or replace view Q10(Code, Industry) as
 select c.Code, c.Industry
-from category c
-group by c.Industry, c.Code
-having count(c.Industry) = 1
-*/
+from category c, count_industry ci
+where c.Industry = ci.industry and ci.count = 1;
 
-/*
---List all sectors ranked by their average ratings in descending order.
---AvgRating is calculated by finding the average AvgCompanyRating for each sector (where AvgCompanyRating is the average rating of a company).
-
---join rating and category table
 create or replace view Q11(Sector, AvgRating) as
 select  c.Sector, avg(r.star)
 from category c join rating r on (c.code = r.code)
-group by c.sector
-
-*/
-
+group by c.sector, r.star
+order by r.star desc;
 
 
-/*
---Output the person names of the executives that are affiliated with more than one company.
+
 create or replace view Q12(Name) as
 select Person
 from executive
 group by Person
-having count(person) > 1
-*/
+having count(person) > 1;
 
---count(australia) = count(sector)
---Find all the companies with a registered address in Australia, in a Sector
---where there are no overseas companies in the same Sector. i.e.,
---they are in a Sector that all companies there have local Australia address.
 
-/*
--- Find all companies that are located out of australia
+
 create or replace view not_in_aust(Code, Country) as
 select c.code, c.country
 from company c
 where not c.country = 'Australia';
 
--- Now, find the corresponding sectors
 create or replace view sect(Sector) as
 select c2.sector
 from company c1 join category c2 on c1.code = c2.code,  not_in_aust nia
@@ -172,16 +127,8 @@ select c1.Code, c1.Name, c1.Address, c1.Zip, c2.sector
 from company c1 join category c2 on c1.code = c2.code, sect s
 where c2.sector not in (select * from sect)
 group by c2.sector, c1.code, name, address, zip;
-*/
 
 
-/*Calculate stock gains based on their prices of the first trading day and last
-trading day (i.e., the oldest "Date" and the most recent "Date" of the records
-stored in the ASX table). Order your result by Gain in descending order and then
-by Code in ascending order.
-*/
-
-/*
 create or replace view start_date(Date, Code) as
 select min("Date"), Code
 from asx
@@ -210,28 +157,14 @@ from asx a, start_price sp, end_price ep
 where a.code = sp.code and a.code = ep.Code
 order by Gain desc,  Code asc;
 
-*/
 
-
-
-
-/*
-For all the trading records in the ASX table, produce the following statistics as a database view
-(where Gain is measured in percentage). AvgDayGain is defined as the summation of all the daily
-gains (in percentage) then divided by the number of trading days (as noted above, the total number of days here should exclude the first trading day).
-create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
-
---create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
-*/
-
-/*
 
 create or replace view Q15(Code, MinPrice, AvgPrice, MaxPrice, MinDayGain, AvgDayGain, MaxDayGain) as
 select a.Code, min(a.price), avg(a.price), max(a.price), min(q7.Gain), sum(q7.Gain)/count(q7.code), max(q7.Gain)
 from asx a, q7
 where a.code = q7.code
 group by a.code;
-*/
+
 
 /*
 create or replace function
@@ -253,7 +186,6 @@ $$ language plpgsql;
 create trigger Q16
     after insert or update on executive
 for each row execute procedure Q16_procedure();
-
 */
 
 /*
@@ -336,6 +268,7 @@ create trigger Q17
 for each row execute procedure Q17_procedure();
 */
 
+/*
 create or replace function
     Q18_procedure() returns trigger
 as $$
@@ -352,11 +285,6 @@ $$ language plpgsql;
 create trigger Q18
     after update on asx
 for each row execute procedure Q18_procedure();
+*/
 
 
-
-
-
-
-
---Stock price and trading volume data are usually incoming data and seldom involve updating existing data. However, updates are allowed in order to correct data errors. All such updates (instead of data insertion) are logged and stored in the ASXLog table. Create a trigger to log any updates on Price and/or Voume in the ASX table and log these updates (only for update, not inserts) into the ASXLog table. Here we assume that Date and Code cannot be corrected and will be the same as their original, old values. Timestamp is the date and time that the correction takes place. Note that it is also possible that a record is corrected more than once, i.e., same Date and Code but different Timestamp.
