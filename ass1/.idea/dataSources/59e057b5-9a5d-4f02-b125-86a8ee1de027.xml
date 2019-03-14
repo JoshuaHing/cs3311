@@ -9,7 +9,7 @@
       <Comment>default administrative connection database</Comment>
       <StateNumber>567</StateNumber>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>2420</IntrospectionStateNumber>
+      <IntrospectionStateNumber>2463</IntrospectionStateNumber>
       <Current>1</Current>
       <Visible>1</Visible>
     </database>
@@ -96,7 +96,7 @@
       <Comment>standard public schema</Comment>
       <StateNumber>360</StateNumber>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>2421</IntrospectionStateNumber>
+      <IntrospectionStateNumber>2464</IntrospectionStateNumber>
       <Current>1</Current>
       <Visible>1</Visible>
     </schema>
@@ -271,11 +271,11 @@
       <RoutineKind>function</RoutineKind>
       <Cost>100.0</Cost>
     </routine>
-    <routine id="44" parent="17" name="q17_procedure">
-      <ObjectId>17074</ObjectId>
+    <routine id="44" parent="17" name="q18_procedure">
+      <ObjectId>17080</ObjectId>
       <Owner>postgres</Owner>
-      <SourceTextLength>1186</SourceTextLength>
-      <StateNumber>2418</StateNumber>
+      <SourceTextLength>162</SourceTextLength>
+      <StateNumber>2461</StateNumber>
       <VolatilityKind>volatile</VolatilityKind>
       <ResultsDefinition>trigger</ResultsDefinition>
       <LanguageName>plpgsql</LanguageName>
@@ -347,13 +347,13 @@ code</ColNames>
       <ColNames>volume</ColNames>
       <Predicate>volume &gt;= 0</Predicate>
     </check>
-    <trigger id="54" parent="26" name="q17">
-      <ObjectId>17075</ObjectId>
-      <StateNumber>2419</StateNumber>
+    <trigger id="54" parent="26" name="q18">
+      <ObjectId>17081</ObjectId>
+      <StateNumber>2462</StateNumber>
       <Turn>after-row</Turn>
-      <Events>IU</Events>
+      <Events>U</Events>
       <FireMode>origin</FireMode>
-      <CallRoutineId>17074</CallRoutineId>
+      <CallRoutineId>17080</CallRoutineId>
     </trigger>
     <column id="55" parent="27" name="Timestamp">
       <Position>1</Position>

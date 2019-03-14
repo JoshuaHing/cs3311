@@ -268,6 +268,8 @@ Create a trigger to increase the stock's rating (as Star's) to 5 when the stock
    a given stock that need to be updated, update (not insert) all these records.
 */
 
+/*
+
 -- First, access the gain table and order by sector...?
 create or replace view daily_gain_by_sector(Sector, "Date", Code, gain) as
 select c.Sector, q7."Date", c.Code, q7.gain
@@ -332,6 +334,27 @@ $$ language plpgsql;
 create trigger Q17
     after insert or update on asx
 for each row execute procedure Q17_procedure();
+*/
+
+create or replace function
+    Q18_procedure() returns trigger
+as $$
+declare
+
+begin
+    raise notice 'update triggered...';
+    insert into asxlog values (now(), old."Date", old.Code, old.volume, old.price);
+    return new;
+
+end;
+$$ language plpgsql;
+
+create trigger Q18
+    after update on asx
+for each row execute procedure Q18_procedure();
+
+
+
 
 
 
