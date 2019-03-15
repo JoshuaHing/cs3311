@@ -166,7 +166,7 @@ where a.code = q7.code
 group by a.code;
 
 
-/*
+
 create or replace function
     Q16_procedure() returns trigger
 as $$
@@ -182,50 +182,28 @@ end;
 $$ language plpgsql;
 
 
---Create a trigger on the Executive table, to check and disallow any insert or update of a Person in the Executive table to be an executive of more than one company.
 create trigger Q16
     after insert or update on executive
 for each row execute procedure Q16_procedure();
-*/
 
-/*
---Suppose more stock trading data are incoming into the ASX table.
-Create a trigger to increase the stock's rating (as Star's) to 5 when the stock
- has made a maximum daily price gain (when compared with the price on the previous trading day)
-  in percentage within its sector. For example, for a given day and a given sector,
-  if Stock A has the maximum price gain in the sector, its rating should then be updated to 5.
-   If it happens to have more than one stock with the same maximum price gain, update all these stocks'
-   ratings to 5. Otherwise, decrease the stock's rating to 1 when the stock has performed the worst in
-   the sector in terms of daily percentage price gain. If there are more than one record of rating for
-   a given stock that need to be updated, update (not insert) all these records.
-*/
 
-/*
-
--- First, access the gain table and order by sector...?
 create or replace view daily_gain_by_sector(Sector, "Date", Code, gain) as
 select c.Sector, q7."Date", c.Code, q7.gain
 from Q7 as q7 join category c on (q7.code = c.code);
 
--- Then, let's get the max gain for that day.
 create or replace view daily_maxgain_by_sector(Sector, "Date", max_gain) as
 select sector, "Date", max(gain)
 from daily_gain_by_sector
-group by "Date", sector
+group by sector, "Date"
 order by sector, "Date";
 
 
 create or replace view daily_mingain_by_sector(Sector, "Date", min_gain) as
 select sector, "Date", min(gain)
 from daily_gain_by_sector
-group by "Date", sector
+group by sector, "Date"
 order by sector, "Date";
 
--- Now, let's create a trigger
--- if the entry that i'm adding or updating has the max
--- update rating to 5
--- in that case, we need max
--- for each sector?
 create or replace function
     Q17_procedure() returns trigger
 as $$
@@ -266,9 +244,9 @@ $$ language plpgsql;
 create trigger Q17
     after insert or update on asx
 for each row execute procedure Q17_procedure();
-*/
 
-/*
+
+
 create or replace function
     Q18_procedure() returns trigger
 as $$
@@ -285,6 +263,6 @@ $$ language plpgsql;
 create trigger Q18
     after update on asx
 for each row execute procedure Q18_procedure();
-*/
+
 
 
