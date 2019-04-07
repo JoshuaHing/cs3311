@@ -1,0 +1,9 @@
+#!/srvr/cs3311psql/lib/php535/bin/php
+<?php
+
+require("a2.php");
+
+$db = dbConnect(DB_CONNECTION);
+// Insert code here
+
+?>

@@ -1,0 +1,71 @@
+#!/srvr/cs3311psql/lib/php535/bin/php
+<?php
+
+require("a2.php");
+
+
+$db = dbConnect(DB_CONNECTION);
+
+
+$movie_match = <<<hello
+select m.id, m.title, m.year, m.content_rating, r.imdb_score
+from movie m, rating r
+where m.id = r.movie_id and m.title ~* %s
+order by m.year asc, m.content_rating asc, m.title asc;
+hello;
+
+//sort by year, imdb rating then title (all in asc)
+
+
+$sql = mkSQL($movie_match, $argv[1]);
+$res = dbQuery($db, $sql);
+$i = 1;
+while ($t = dbNext($res)) {
+	//Prepare the string
+	$str = "$i. ";
+	$str = $str . "$t[title] ";
+	$str = $str . "(";
+	if (!is_null($t[year])) {
+		$str = $str . "$t[year], ";
+	}
+	if (!is_null($t[content_rating])) {
+		$str = $str . "$t[content_rating], ";
+	}
+	$str = $str . "$t[imdb_score])";
+	
+	//For each id, get a list of the genres
+
+
+
+	$genres = <<<hey
+	select genre
+	from genre
+	where movie_id = %d;
+hey;
+
+
+	$sql2 = mkSQL($genres, $t[id]);
+        $res2 = dbQuery($db, $sql2);
+        $num_rows = pg_num_rows($res2);
+        $j = 0;
+        $str2 = "";
+        if ($num_rows > 0) {
+                $str2 = "[";
+                while ($t2 = dbNext($res2)) {
+                        $str2 = $str2 . "$t2[genre]";
+                        $j = $j + 1;
+                        if ($j == $num_rows) {
+                                $str2 = $str2 . "]";
+                                break;
+                        } else {
+                                $str2 = $str2 . ", ";
+                        }
+                }
+        }
+
+	$str = $str . $str2;		
+	echo "$str\n";
+	$i = $i + 1;	
+
+}
+?>

@@ -1,0 +1,46 @@
+#!/srvr/cs3311psql/lib/php535/bin/php
+<?php
+
+require("a2.php");
+
+
+$db = dbConnect(DB_CONNECTION);
+
+
+//require_once(LIB_DIR."/db.php");
+
+// Your DB connection parameters, e.g., database name
+//
+$acted_in = <<<hello
+select * from acted_in
+where lower(actor_name) = lower(%s)
+hello;
+
+$sql =  mkSQL($acted_in, $argv[1]);
+$res = dbQuery($db, $sql);
+$i = 1;
+//title, director, year, rating, imdb
+while ($t = dbNext($res)){
+	$str = "$i. ";
+	//maybe no director, year or rating	
+	$str = $str . $t[title];
+	$str = $str . " -- ";
+	if (!is_null($t[director])) {
+		$str = $str . "$t[director] ";
+	}
+	$str = $str . "(";
+	if (!is_null($t[year])) {
+		$str = $str . "$t[year], ";
+	}
+	if (!is_null($t[content_rating])) {
+		$str = $str . "$t[content_rating], ";
+	}
+	$str = $str . "$t[imdb_score])";
+
+	
+	echo "$str\n";		
+	$i = $i + 1;	
+}
+
+
+?>
