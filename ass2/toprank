@@ -1,0 +1,26 @@
+#!/srvr/cs3311psql/lib/php535/bin/php
+<?php
+
+require("a2.php");
+
+$db = dbConnect(DB_CONNECTION);
+// Insert code here
+if (!is_null($argv[4])) {
+	$Genres = $argv[1];
+	$K = $argv[2];
+	$StartYear = $argv[3];
+	$EndYear = $argv[4];
+} else {
+	$K = $argv[1];
+	$StartYear = $argv[2];
+	$EndYear = $argv[3];
+
+}
+// or
+
+
+
+
+
+
+?>
