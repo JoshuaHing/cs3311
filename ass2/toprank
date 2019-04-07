@@ -5,6 +5,7 @@ require("a2.php");
 
 $db = dbConnect(DB_CONNECTION);
 // Insert code here
+//Title (year, content_rating, lang) [imdb_score, votes, num_voted_users]
 if (!is_null($argv[4])) {
 	$Genres = $argv[1];
 	$K = $argv[2];
@@ -14,7 +15,20 @@ if (!is_null($argv[4])) {
 	$K = $argv[1];
 	$StartYear = $argv[2];
 	$EndYear = $argv[3];
-
+	// So we display up to K results
+	//First, find all movies between start and end years
+	$movies = <<<hello2
+	select m.title, m.year, m.content_rating, m.lang, r.imdb_score, r.num_voted_users
+	from movie m, rating r
+	where m.id = r.movie_id and m.year >= %d and m.year <= %d
+	order by r.imdb_score desc, r.num_voted_users desc
+	limit %d;
+hello2;
+	$sql2 = mkSQL($movies, $StartYear, $EndYear, $K);
+	$res2 = dbQuery($db, $sql2);
+	while ($t2 = dbNext($res2)) {
+		echo "movie = $t2[title]\n";
+	}
 }
 // or
 
