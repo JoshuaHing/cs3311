@@ -14,7 +14,7 @@ define("DB_CONNECTION","dbname=a2");
 // Include your other common PHP code below
 // E.g., common constants, functions, etc.
 //
-
+// Create genre function
 
 
 

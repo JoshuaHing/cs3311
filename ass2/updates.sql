@@ -2,7 +2,7 @@
 --
 -- updates.sql
 --
--- Written by <<YOUR NAME>> (<<YOUR ID>>), Apr 2019
+-- Written by <<Joshua Hing>> (<<z5117173>>), Apr 2019
 
 --  This script takes a "vanilla" imdb database (a2.db) and
 --  make all of the changes necessary to make the databas
@@ -30,11 +30,6 @@ UPDATE movie SET title = TRIM (title);
 -- Title, director, year, content rating, imdb score
 -- Whatever It Takes -- David Raynr (2000, PG-13, 5.5)
 
-/*
-create or replace view incomplete_movie(id) as
-select id from movie
-where year is NULL;
-*/
 
 
 create or replace view director_movie (movie_id, director_id, title, director, year, content_rating, imdb_score) as
