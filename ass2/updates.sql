@@ -51,3 +51,20 @@ select m.id, m.title, m.year, m.content_rating, r.imdb_score
 from movie m, rating r
 where m.id = r.movie_id;
 
+create or replace view C_table(id, title, year, imdb_score, num_voted_users) as
+select m.id, m.title, m.year, r.imdb_score, r.num_voted_users
+from movie m, rating r
+where m.id = r.movie_id;
+
+create or replace view C_table_wgenre(id, title, year, imdb_score, num_voted_users, genre) as
+select ct.*, genre
+from C_table ct, genre g
+where ct.id = g.movie_id
+order by ct.id;
+
+create or replace view C_ans(id, title, year, imdb_score, num_voted_users, common_genre_count, common_keyword_count) as
+select ct.*, NULL, NULL
+from C_table ct;
+
+
+
