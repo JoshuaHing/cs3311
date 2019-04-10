@@ -45,5 +45,6 @@ select id, title, year, coalesce(similar_genre_count, 0) as similar_genre_count,
                         as movie_keyword2 on (movie_keyword1.keyword = movie_keyword2.keyword)
                         where movie_keyword1.id != movie_keyword2.id
                         order by similar_keyword_count desc) as keyword_table on (keyword_table.id3 = hello2.id)) as hello3
-order by similar_genre_count desc, similar_keyword_count desc, imdb_score desc, num_voted_users desc;
+order by similar_genre_count desc, similar_keyword_count desc, imdb_score desc, num_voted_users desc
+limit 10;
 -- Join all of the tables together
