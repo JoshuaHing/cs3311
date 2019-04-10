@@ -1,17 +1,23 @@
-/*select *, count(*) 
-over (partition by id)
-from movie_genre2;
-*/
+/*
+movie, actor, acting
+ */
 
--- select count(*) from ((select genre from genre where movie_id = 532) intersect (select genre from genre where movie_id=398)) as intersection;
+create or replace view E_actor_movie(title, year, name) as
+select movie.title, movie.year, actor.name
+from movie, actor, acting
+where movie.id = acting.movie_id and actor.id = acting.actor_id;
+
+
+select title from E_actor_movie where name ilike 'Tom Cruise'
+intersect
+select title from E_actor_movie where name ilike 'Jeremy Renner';
+
+
+
+-- tom cruise - 539
+-- jeremy renner - 1685
 
 /*
-select m.*, count(*)
-over (partition by id)
-from movie m join genre g on (m.id = g.movie_id);
+intersect
+select movie_id from acting where actor_id = 1685;
 */
-
-
-select m.*, count(intersection.*)
-over (partition by m.id)
-from movie m join genre g on (m.id = g.movie_id), ((select genre from genre where movie_id = m.id) intersect (select genre from genre where movie_id = 398)) as intersection;
