@@ -6,4 +6,14 @@ require("a2.php");
 $db = dbConnect(DB_CONNECTION);
 // Insert code here
 
+//Title, K
+$title = $argv[1];
+$N = $argv[2];
+
+// For given title (case insensitive), find the corresponding id
+$movie_id = "select id from movie where title ilike %s";
+$sql1 = mkSQL($movie_id, $title);
+$id = dbOneValue($db, $sql1);
+echo "id = $id\n";
+
 ?>
