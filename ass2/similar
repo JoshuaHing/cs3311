@@ -7,13 +7,59 @@ $db = dbConnect(DB_CONNECTION);
 // Insert code here
 
 //Title, K
-$title = $argv[1];
+$name = $argv[1];
 $N = $argv[2];
 
 // For given title (case insensitive), find the corresponding id
 $movie_id = "select id from movie where title ilike %s";
-$sql1 = mkSQL($movie_id, $title);
+$sql1 = mkSQL($movie_id, $name);
 $id = dbOneValue($db, $sql1);
-echo "id = $id\n";
+
+
+// Now that we have the id, inject this into mega big sql statement
+// Sorry for the terrible formatting... vim was having issues with copying over indented code
+$result_query = <<<abcdef
+select id, title, year, coalesce(similar_genre_count, 0) as similar_genre_count, coalesce(similar_keyword_count, 0) as similar_keyword_count, imdb_score, num_voted_users from
+(select distinct * from ((select id, title, year, imdb_score, num_voted_users from movie m full outer join rating r on (m.id = r.movie_id)) as hello
+join (select D_movie_genre.id as id2, count(*) over (partition by D_movie_genre.id) as similar_genre_count
+from D_movie_genre join (select m.id, m.title, g.genre
+from movie m join genre g on (m.id = g.movie_id)
+where m.id = %d) as movie_genre2 on (D_movie_genre.genre = movie_genre2.genre)
+where D_movie_genre.id != movie_genre2.id
+order by similar_genre_count desc) as genre_table on (genre_table.id2 = hello.id)) as hello2
+left join (select D_movie_keyword.id  as id3, count(*) over (partition by D_movie_keyword.id) as similar_keyword_count
+from D_movie_keyword join (select distinct m.id, m.title, k.keyword
+from movie m join keyword k on (m.id = k.movie_id)
+where m.id = %d)
+as movie_keyword2 on (D_movie_keyword.keyword = movie_keyword2.keyword)
+where D_movie_keyword.id != movie_keyword2.id
+order by similar_keyword_count desc) as keyword_table on (keyword_table.id3 = hello2.id)) as hello3
+order by similar_genre_count desc, similar_keyword_count desc, imdb_score desc, num_voted_users desc
+limit %d;
+abcdef;
+
+$sql2 = mkSQL($result_query, $id, $id, $N);
+$res = dbQuery($db, $sql2);
+
+$i = 1;
+while ($r = dbNext($res)) {
+	//then the title
+	$str = "$i. $r[title] ";
+	//then the year if it exists
+	if (!is_null($r[year])) {
+		$str = $str . "($r[year]) ";
+	}
+	//Then the counts
+	$str = $str . "[$r[similar_genre_count], $r[similar_keyword_count], ";
+	if (!is_null($r[imdb_score])) {
+		$str = $str . "$r[imdb_score], ";
+	}
+	if (!is_null($r[num_voted_users])) {
+		$str = $str . "$r[num_voted_users]";
+	}
+	$str = $str . "]";
+	echo "$str\n";
+	$i = $i + 1;
+}
 
 ?>
