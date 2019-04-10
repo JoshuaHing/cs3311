@@ -67,4 +67,10 @@ select ct.*, NULL, NULL
 from C_table ct;
 
 
+create or replace view D_movie_genre(id, genre) as
+select m.id, g.genre
+from movie m join genre g on (m.id = g.movie_id);
 
+create or replace view D_movie_keyword(id, keyword) as
+select m.id, k.keyword
+from movie m join keyword k on (m.id = k.movie_id);
