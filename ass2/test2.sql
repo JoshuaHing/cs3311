@@ -95,4 +95,9 @@ FROM E_movie_actors ma1 JOIN E_movie_actors ma2 ON (ma1.end_actor = ma2.start_ac
 WHERE ma1.start_actor = 539
 AND ma2.end_actor = 66;
 
+select *
+FROM E_movie_actors ma1 JOIN E_movie_actors ma2 ON (ma1.end_actor = ma2.start_actor)
+WHERE ma1.start_actor = 539
+AND ma2.end_actor = 66;
+
 
