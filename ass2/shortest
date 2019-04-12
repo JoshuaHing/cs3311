@@ -4,6 +4,121 @@
 require("a2.php");
 
 $db = dbConnect(DB_CONNECTION);
-// Insert code here
+
+$start_name = $argv[1];
+$end_name = $argv[2];
+
+
+//Reinitialise start name with proper grammar
+$name_query = "select name from actor where name ilike %s";
+$start_name = dbOneValue($db, mkSQL($name_query, $start_name));
+$end_name = dbOneValue($db, mkSQL($name_query, $end_name));
+
+
+//For given names, find their corresponding ids
+$id_query = "select id from actor where name ilike %s";
+$sql = mkSQL($id_query, $start_name);
+
+$start_id = dbOneValue($db, $sql);
+
+$sql = mkSQL($id_query, $end_name);
+
+$end_id = dbOneValue($db, $sql);
+
+// First, check for pathlen of 1
+$len1 = <<<length1
+		select * from e_movie_actor
+		where start_actor = %d and end_actor = %d
+length1;
+
+$sql = mkSQL($len1, $start_id, $end_id);
+$res = dbQuery($db, $sql);
+$i = 1;
+$num_path_1 = pg_num_rows($res);
+
+if ($num_path_1 != 0) {
+	while ($t = dbNext($res)) {
+		// Given start_actor, movie and end_actor, retrieve relevant invo
+		$movie_query = "select title, year from movie where id = %d";
+		$sql = mkSQL($movie_query, $t[movie]);
+		list($title, $year) = dbOneTuple($db, $sql);
+		$str = "$i. $start_name was in $title ($year) with $end_name";
+		echo "$str\n";
+		$i = $i + 1;
+	}
+	exit();
+}
+// Now, search for length of 2
+
+$len2 = <<<length2
+select ma1.movie movie1, ma1.end_actor actor1, ma2.movie movie2
+from E_movie_actor as ma1 join E_movie_actor as ma2 on (ma1.end_actor = ma2.start_actor)
+where ma1.start_actor = %d and ma2.end_actor = %d;
+length2;
+
+$sql = mkSQL($len2, $start_id, $end_id);
+$res = dbQuery($db, $sql);
+
+$num_path_2 = pg_num_rows($res);
+if ($num_path_2 != 0) {
+	$string_array2 = array();
+	while ($t = dbNext($res)) {
+		$movie_query = "select title, year from movie where id = %d";
+		$sql = mkSQL($movie_query, $t[movie1]);
+		list($title1, $year1) = dbOneTuple($db, $sql);
+		$sql = mkSQL($movie_query, $t[movie2]);
+		list($title2, $year2) = dbOneTuple($db, $sql);
+
+		//Now, get the corresponding actor info
+		$name_query = "select name from actor where id = %d";
+		$name = dbOneValue($db, mkSQL($name_query, $t[actor1]));
+		$str = "$start_name was in $title1 ($title1) with $name; $name was in $title2 ($year2) with $end_name";
+		array_push($string_array2, $str);
+		
+	}
+
+	sort($string_array2);
+	$i = 1;
+	foreach ($string_array2 as $a) {
+		echo "$i. $a\n";
+		$i = $i + 1;
+	}
+	exit();
+}
+
+// Now, do paths of length 3
+$len3 = <<<length3
+select ma1.movie movie1, ma1.end_actor actor1, ma2.movie movie2, ma2.end_actor actor2, ma3.movie movie3
+from E_movie_actor as ma1 join E_movie_actor as ma2 on (ma1.end_actor = ma2.start_actor)
+						  join E_movie_actor as ma3 on (ma2.end_actor = ma3.start_actor)
+where ma1.start_actor = %d and ma3.end_actor = %d;
+length3;
+$sql = mkSQL($len3, $start_id, $end_id);
+$res = dbQuery($db, $sql);
+$num_path_3 = pg_num_rows($res);
+if ($num_path_3 != 0) {
+	$string_array3 = array();
+	while ($t = dbNext($res)) {
+		$movie_query = "select title, year from movie where id = %d";
+		list($title1, $year1) = dbOneTuple($db, mkSQL($movie_query, $t[movie1]));
+		list($title2, $year2) = dbOneTuple($db, mkSQL($movie_query, $t[movie2]));
+		list($title3, $year3) = dbOneTuple($db, mkSQL($movie_query, $t[movie3]));
+
+		$name_query = "select name from actor where id = %d";
+		$name1 = dbOneValue($db, mkSQL($name_query, $t[actor1]));
+		$name2 = dbOneValue($db, mkSQL($name_query, $t[actor2]));
+
+		$str = "$start_name was in $title1 ($year1) with $name1; $name1 was in $title2 ($year2) with $name2; $name2 was in $title3 ($year3) with $end_name";
+		array_push($string_array3, $str);
+	}
+	sort($string_array3);
+	$i = 1;
+	foreach ($string_array3 as $a) {
+		echo "$i. $a\n";
+		$i = $i + 1;
+	}
+	exit();
+}
+
 
 ?>

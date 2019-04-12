@@ -76,6 +76,6 @@ select m.id, m.title, k.keyword
 from movie m join keyword k on (m.id = k.movie_id);
 
 -- Create a view of the potential paths (actors (end_actor) that have worked on the same movie as the start actor)
-create or replace view E_movie_actors (start_actor, movie, end_actor) as
+create or replace view E_movie_actor (start_actor, movie, end_actor) as
 select a1.actor_id start_actor, a2.movie_id, a2.actor_id as end_actor
 from acting a1 join acting a2 on (a1.movie_id = a2.movie_id and a1.actor_id != a2.actor_id);
