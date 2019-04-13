@@ -27,10 +27,12 @@ from movie m join genre g on (m.id = g.movie_id)
 where m.id = %d) as movie_genre2 on (D_movie_genre.genre = movie_genre2.genre)
 where D_movie_genre.id != movie_genre2.id
 order by similar_genre_count desc) as genre_table on (genre_table.id2 = hello.id)) as hello2
+
 left join (select D_movie_keyword.id  as id3, count(*) over (partition by D_movie_keyword.id) as similar_keyword_count
 from D_movie_keyword join (select distinct m.id, m.title, k.keyword
 from movie m join keyword k on (m.id = k.movie_id)
 where m.id = %d)
+
 as movie_keyword2 on (D_movie_keyword.keyword = movie_keyword2.keyword)
 where D_movie_keyword.id != movie_keyword2.id
 order by similar_keyword_count desc) as keyword_table on (keyword_table.id3 = hello2.id)) as hello3
