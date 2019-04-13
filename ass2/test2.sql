@@ -40,4 +40,7 @@ AND ma6.end_actor = 3975;
 
 -- emma stone 369, chelsea field = 3975
 
+-- need to find actors between n and m degrees of separation
+-- have a loop...?
+
 
