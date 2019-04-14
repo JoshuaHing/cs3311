@@ -126,7 +126,7 @@ select ma1.movie movie1,
         ma2.movie movie2,
         ma2.end_actor actor2,
         ma3.movie movie3,
-        ma3.end_actor, actor3,
+        ma3.end_actor actor3,
         ma4.movie movie4
 from E_movie_actor as ma1 join E_movie_actor as ma2 on (ma1.end_actor = ma2.start_actor)
 						  join E_movie_actor as ma3 on (ma2.end_actor = ma3.start_actor)
@@ -138,17 +138,17 @@ length4;
 $sql = mkSQL($len4, $start_id, $end_id);
 $res = dbQuery($db, $sql);
 
-$num_path_4 = db_num_rows($res);
+$num_path_4 = pg_num_rows($res);
 
 if ($num_path_4 != 0) {
     $string_array4 = array();
     while ($t = dbNext($res)) {
         // Get movie info
         $movie_query = "select title, year from movie where id = %d";
-        list($title1, $year1) = dbQuery($db, mkSQL($movie_query, $t[movie1]));
-        list($title2, $year2) = dbQuery($db, mkSQL($movie_query, $t[movie2]));
-        list($title3, $year3) = dbQuery($db, mkSQL($movie_query, $t[movie3]));
-        list($title4, $year4) = dbQuery($db, mkSQL($movie_query, $t[movie4]));
+        list($title1, $year1) = dbOneTuple($db, mkSQL($movie_query, $t[movie1]));
+        list($title2, $year2) = dbOneTuple($db, mkSQL($movie_query, $t[movie2]));
+        list($title3, $year3) = dbOneTuple($db, mkSQL($movie_query, $t[movie3]));
+        list($title4, $year4) = dbOneTuple($db, mkSQL($movie_query, $t[movie4]));
 
         // Now, get the names
         $name_query = "select name from actor where id = %d";
@@ -181,7 +181,7 @@ $len5 = <<<length5
         ma2.movie movie2,
         ma2.end_actor actor2,
         ma3.movie movie3,
-        ma3.end_actor, actor3,
+        ma3.end_actor actor3,
         ma4.movie movie4,
         ma4.end_actor actor4,
         ma5.movie movie5
@@ -193,18 +193,18 @@ where ma1.start_actor = %d and ma5.end_actor = %d;
 length5;
 $sql = mkSQL($len5, $start_id, $end_id);
 $res = dbQuery($db, $sql);
-$num_path_5 = db_num_rows($res);
+$num_path_5 = pg_num_rows($res);
 
 if ($num_path_5 != 0) {
     $string_array5 = array();
     while ($t = dbNext($res)) {
 
         $movie_query = "select title, year from movie where id = %d";
-        list($title1, $year1) = dbQuery($db, mkSQL($movie_query, $t[movie1]));
-        list($title2, $year2) = dbQuery($db, mkSQL($movie_query, $t[movie2]));
-        list($title3, $year3) = dbQuery($db, mkSQL($movie_query, $t[movie3]));
-        list($title4, $year4) = dbQuery($db, mkSQL($movie_query, $t[movie4]));
-        list($title5, $year5) = dbQuery($db, mkSQL($movie_query, $t[movie5]));
+        list($title1, $year1) = dbOneTuple($db, mkSQL($movie_query, $t[movie1]));
+        list($title2, $year2) = dbOneTuple($db, mkSQL($movie_query, $t[movie2]));
+        list($title3, $year3) = dbOneTuple($db, mkSQL($movie_query, $t[movie3]));
+        list($title4, $year4) = dbOneTuple($db, mkSQL($movie_query, $t[movie4]));
+        list($title5, $year5) = dbOneTuple($db, mkSQL($movie_query, $t[movie5]));
 
         // Now, get the names
         $name_query = "select name from actor where id = %d";
@@ -213,10 +213,10 @@ if ($num_path_5 != 0) {
         $name3 = dbOneValue($db, mkSQL($name_query, $t[actor3]));
         $name4 = dbOneValue($db, mkSQL($name_query, $t[actor4]));
 
-        $str = "$start_name was in $title1 ($year1) with $name1";
-        $str = $str . "$name1 was in $title2 ($year2) with $name2 ";
-        $str = $str . "$name2 was in $title3 ($year3) with $name3 ";
-        $str = $str . "$name3 was in $title4 ($year4) with $name4 ";
+        $str = "$start_name was in $title1 ($year1) with $name1; ";
+        $str = $str . "$name1 was in $title2 ($year2) with $name2; ";
+        $str = $str . "$name2 was in $title3 ($year3) with $name3; ";
+        $str = $str . "$name3 was in $title4 ($year4) with $name4; ";
         $str = $str . "$name4 was in $title5 ($year5) with $end_name";
 
         array_push($string_array5);
@@ -239,7 +239,7 @@ $len6 = <<<length6
         ma2.movie movie2,
         ma2.end_actor actor2,
         ma3.movie movie3,
-        ma3.end_actor, actor3,
+        ma3.end_actor actor3,
         ma4.movie movie4,
         ma4.end_actor actor4,
         ma5.movie movie5,
@@ -255,19 +255,19 @@ where ma1.start_actor = %d and ma6.end_actor = %d;
 length6;
 $sql = mkSQL($len6, $start_id, $end_id);
 $res = dbQuery($db, $sql);
-$num_path_6 = db_num_rows($res);
+$num_path_6 = pg_num_rows($res);
 
 if ($num_path_6 != 0) {
 	$string_array6 = array();
     while ($t = dbNext($res)) {
         // Get movie info
         $movie_query = "select title, year from movie where id = %d";
-        list($title1, $year1) = dbQuery($db, mkSQL($movie_query, $t[movie1]));
-        list($title2, $year2) = dbQuery($db, mkSQL($movie_query, $t[movie2]));
-        list($title3, $year3) = dbQuery($db, mkSQL($movie_query, $t[movie3]));
-        list($title4, $year4) = dbQuery($db, mkSQL($movie_query, $t[movie4]));
-        list($title5, $year5) = dbQuery($db, mkSQL($movie_query, $t[movie5]));
-        list($title6, $year6) = dbQuery($db, mkSQL($movie_query, $t[movie6]));
+        list($title1, $year1) = dbOneTuple($db, mkSQL($movie_query, $t[movie1]));
+        list($title2, $year2) = dbOneTuple($db, mkSQL($movie_query, $t[movie2]));
+        list($title3, $year3) = dbOneTuple($db, mkSQL($movie_query, $t[movie3]));
+        list($title4, $year4) = dbOneTuple($db, mkSQL($movie_query, $t[movie4]));
+        list($title5, $year5) = dbOneTuple($db, mkSQL($movie_query, $t[movie5]));
+        list($title6, $year6) = dbOneTuple($db, mkSQL($movie_query, $t[movie6]));
 
         // Now, get the names
         $name_query = "select name from actor where id = %d";
@@ -278,11 +278,11 @@ if ($num_path_6 != 0) {
         $name5 = dbOneValue($db, mkSQL($name_query, $t[actor5]));
 
         //Combine into string
-        $str = "$start_name was in $title1 ($year1) with $name1";
-        $str = $str . "$name1 was in $title2 ($year2) with $name2 ";
-        $str = $str . "$name2 was in $title3 ($year3) with $name3 ";
-        $str = $str . "$name3 was in $title4 ($year4) with $name4 ";
-        $str = $str . "$name4 was in $title5 ($year5) with $name5 ";
+        $str = "$start_name was in $title1 ($year1) with $name1; ";
+        $str = $str . "$name1 was in $title2 ($year2) with $name2; ";
+        $str = $str . "$name2 was in $title3 ($year3) with $name3;  ";
+        $str = $str . "$name3 was in $title4 ($year4) with $name4;  ";
+        $str = $str . "$name4 was in $title5 ($year5) with $name5; ";
         $str = $str . "$name5 was in $title6 ($year6) with $end_name";
         array_push($string_array6, $str);
 

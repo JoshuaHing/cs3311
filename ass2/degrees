@@ -1,0 +1,50 @@
+#!/srvr/cs3311psql/lib/php535/bin/php
+<?php
+
+require("a2.php");
+
+$db = dbConnect(DB_CONNECTION);
+// Insert code here
+$actor_name = $argv[1];
+$lower = $argv[2];
+$upper = $argv[3];
+
+// Get the id of the input actor
+$id_query = "select id from actor where name ilike %s";
+$actor_id = dbOneValue($db, mkSQL($id_query, $actor_name));
+
+//First, try to find all actors with degree of separation of 1
+//Sort by degrees of separation then by name
+$sql = <<<result
+
+with recursive F_degrees
+as (
+select E.end_actor as end, 1 as Level
+from   e_movie_actor E
+where  E.start_actor = %d
+
+union all
+select
+prev.end_actor,
+prev.Level + 1
+from   (F_degrees F join e_movie_actor E on E.start_actor = F.end and F.level < %d) as prev)
+
+
+
+select * from (select distinct A.name, min(F.Level) over (partition by F.end) as level
+from   F_degrees F, actor A
+where F.end != %d and A.id = F.end) as t1
+where t1.level >= %d and t1.level <= %d
+order by t1.level, t1.name;
+result;
+$res = dbQuery($db, mkSQL($sql, $actor_id, $upper, $actor_id, $lower, $upper));
+
+$i = 1;
+while ($t = dbNext($res)) {
+	echo "$i. $t[name] ($t[level])\n";
+	$i = $i + 1;
+}
+
+
+
+?>
