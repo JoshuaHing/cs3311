@@ -79,7 +79,19 @@ if ($num_path_2 != 0) {
 		//Now, get the corresponding actor info
 		$name_query = "select name from actor where id = %d";
 		$name = dbOneValue($db, mkSQL($name_query, $t[actor1]));
-		$str = "$start_name was in $title1 ($year1) with $name; $name was in $title2 ($year2) with $end_name";
+
+
+		$str = "$start_name was in $title1 "
+        if (!is_null($year1)) {
+            $str = $str . "($year1) ";
+        }
+        $str = $str . "with $name1; ";
+
+		$str = $str . "$name1 was in $title2 "
+        if (!is_null($year2)) {
+            $str = $str . "($year2) ";
+        }
+        $str = $str . "with $end_name";
 		array_push($string_array2, $str);
 		
 	}
@@ -115,7 +127,24 @@ if ($num_path_3 != 0) {
 		$name1 = dbOneValue($db, mkSQL($name_query, $t[actor1]));
 		$name2 = dbOneValue($db, mkSQL($name_query, $t[actor2]));
 
-		$str = "$start_name was in $title1 ($year1) with $name1; $name1 was in $title2 ($year2) with $name2; $name2 was in $title3 ($year3) with $end_name";
+		$str = "$start_name was in $title1 "
+        if (!is_null($year1)) {
+            $str = $str . "($year1) ";
+        }
+        $str = $str . "with $name1; ";
+
+        $str = "$name1 was in $title2 "
+        if (!is_null($year2)) {
+            $str = $str . "($year2) ";
+        }
+        $str = $str . "with $name2; ";
+
+        $str = $str . "$name2 was in $title3 "
+        if (!is_null($year3)) {
+            $str = $str . "($year3) ";
+        }
+        $str = $str . "with $end_name";
+
 		array_push($string_array3, $str);
 	}
 	sort($string_array3);
@@ -164,10 +193,30 @@ if ($num_path_4 != 0) {
         $name3 = dbOneValue($db, mkSQL($name_query, $t[actor3]));
 
         //Combine into string
-        $str = "$start_name was in $title1 ($year1) with $name1; $name1 was in $title2 ($year2) with $name2; $name2 was in $title3 ($year3) with $name3; $name3 was in $title4 ($year4) with $end_name";
+        $str = "$start_name was in $title1 "
+        if (!is_null($year1)) {
+            $str = $str . "($year1) ";
+        }
+        $str = $str . "with $name1; ";
+
+        $str = "$name1 was in $title2 "
+        if (!is_null($year2)) {
+            $str = $str . "($year2) ";
+        }
+        $str = $str . "with $name2; ";
+
+        $str = "$name2 was in $title3 "
+        if (!is_null($year3)) {
+            $str = $str . "($year3) ";
+        }
+        $str = $str . "with $name3; ";
+
+        $str = $str . "$name3 was in $title4 "
+        if (!is_null($year4)) {
+            $str = $str . "($year4) ";
+        }
+        $str = $str . "with $end_name";
         array_push($string_array4, $str);
-
-
 
     }
     sort($string_array4);
@@ -220,11 +269,35 @@ if ($num_path_5 != 0) {
         $name3 = dbOneValue($db, mkSQL($name_query, $t[actor3]));
         $name4 = dbOneValue($db, mkSQL($name_query, $t[actor4]));
 
-        $str = "$start_name was in $title1 ($year1) with $name1; ";
-        $str = $str . "$name1 was in $title2 ($year2) with $name2; ";
-        $str = $str . "$name2 was in $title3 ($year3) with $name3; ";
-        $str = $str . "$name3 was in $title4 ($year4) with $name4; ";
-        $str = $str . "$name4 was in $title5 ($year5) with $end_name";
+        $str = "$start_name was in $title1 "
+        if (!is_null($year1)) {
+            $str = $str . "($year1) ";
+        }
+        $str = $str . "with $name1; ";
+
+        $str = "$name1 was in $title2 "
+        if (!is_null($year2)) {
+            $str = $str . "($year2) ";
+        }
+        $str = $str . "with $name2; ";
+
+        $str = "$name2 was in $title3 "
+        if (!is_null($year3)) {
+            $str = $str . "($year3) ";
+        }
+        $str = $str . "with $name3; ";
+
+        $str = "$name3 was in $title4 "
+        if (!is_null($year4)) {
+            $str = $str . "($year4) ";
+        }
+        $str = $str . "with $name4; ";
+
+        $str = $str . "$name4 was in $title5 "
+        if (!is_null($year5)) {
+            $str = $str . "($year5) ";
+        }
+        $str = $str . "with $end_name";
 
         array_push($string_array5, $str);
     }
@@ -285,12 +358,42 @@ if ($num_path_6 != 0) {
         $name5 = dbOneValue($db, mkSQL($name_query, $t[actor5]));
 
         //Combine into string
-        $str = "$start_name was in $title1 ($year1) with $name1; ";
-        $str = $str . "$name1 was in $title2 ($year2) with $name2; ";
-        $str = $str . "$name2 was in $title3 ($year3) with $name3; ";
-        $str = $str . "$name3 was in $title4 ($year4) with $name4; ";
-        $str = $str . "$name4 was in $title5 ($year5) with $name5; ";
-        $str = $str . "$name5 was in $title6 ($year6) with $end_name";
+        $str = "$start_name was in $title1 "
+        if (!is_null($year1)) {
+            $str = $str . "($year1) ";
+        }
+        $str = $str . "with $name1; ";
+
+        $str = "$name1 was in $title2 "
+        if (!is_null($year2)) {
+            $str = $str . "($year2) ";
+        }
+        $str = $str . "with $name2; ";
+
+        $str = "$name2 was in $title3 "
+        if (!is_null($year3)) {
+            $str = $str . "($year3) ";
+        }
+        $str = $str . "with $name3; ";
+
+        $str = "$name3 was in $title4 "
+        if (!is_null($year4)) {
+            $str = $str . "($year4) ";
+        }
+        $str = $str . "with $name4; ";
+
+        $str = $str . "$name4 was in $title5 "
+        if (!is_null($year5)) {
+            $str = $str . "($year5) ";
+        }
+        $str = $str . "with $name5";
+
+        $str = $str . "$name5 was in $title6 "
+        if (!is_null($year6)) {
+            $str = $str . "($year6) ";
+        }
+        $str = $str . "with $end_name";
+
         array_push($string_array6, $str);
 
     }
