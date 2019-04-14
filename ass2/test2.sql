@@ -1,46 +1,85 @@
+WITH RECURSIVE RecursiveCTE
+     AS (SELECT
+                E.end_actor as end,
+                1 as Level
+         FROM   e_movie_actor E
+         WHERE  E.start_actor = 1598
+         UNION ALL
+         SELECT
+                prev.end_actor,
+                prev.Level + 1
+         FROM   (RecursiveCTE R
+                join e_movie_actor E
+                on R.end = E.start_actor and R.Level < 2) as prev)
+                /*
+                JOIN ACTING c1
+                  ON c1.movie_id = R.movie_id
+                     AND R.Level < 2
+                JOIN ACTING c2
+                  ON c1.actor_id = c2.actor_id)
+                  */
+Select R.end, R.level
+FROM   RecursiveCTE R
+group by R.end, R.level;
 
--- join two potential paths together and select the ones with our starting and ending actor
-SELECT ma1.movie movie1
-,ma1.end_actor actor1
-,ma2.movie movie2
-,ma2.end_actor actor2
-,ma3.movie movie3
-,ma3.end_actor actor3
-,ma4.movie movie4
-,ma4.end_actor movie4
-,ma5.movie movie5
-FROM E_movie_actor ma1 JOIN E_movie_actor ma2 ON (ma1.end_actor = ma2.start_actor)
-                        join E_movie_actor ma3 on (ma2.end_actor = ma3.start_actor)
-                        join E_movie_actor ma4 on (ma3.end_actor = ma4.start_actor)
-                        join E_movie_actor ma5 on (ma4.end_actor = ma5.start_actor)
-WHERE ma1.start_actor = 1598
-AND ma5.end_actor = 2624;
+
+WITH RECURSIVE RecursiveCTE
+     AS (SELECT C.actor_id,
+                C.movie_id,
+                0 as Level
+         FROM   acting C
+                JOIN ACTOR A
+                  ON A.id = C.actor_id
+         WHERE  A.name = 'Chris Evans'
+         UNION ALL
+         SELECT c1.actor_id,
+                c2.movie_id,
+                R.Level + 1
+         FROM   RecursiveCTE R
+                JOIN acting c1
+                  ON c1.movie_id = R.movie_id
+                     AND R.Level < 2
+                JOIN acting c2
+                  ON c1.actor_id = c2.actor_id)
+SELECT actor_id
+FROM   RecursiveCTE
+GROUP  BY actor_id
+
+with recursive F_degrees
+     as (select
+                E.end_actor as end,
+                1 as Level
+         from   e_movie_actor E
+         where  E.start_actor = 1598
+
+        union all
+         select
+                prev.end_actor,
+                prev.Level + 1
+         from   (F_degrees F join e_movie_actor E on E.start_actor = F.end and R.level < 2) as prev)
 
 
--- chris evans 1598, bill clinton 2624
 
-SELECT ma1.movie movie1
-,ma1.end_actor actor1
-,ma2.movie movie2
-,ma2.end_actor actor2
-,ma3.movie movie3
-,ma3.end_actor actor3
-,ma4.movie movie4
-,ma4.end_actor movie4
-,ma5.movie movie5
-,ma5.end_actor actor5
-,ma6.movie movie6
-FROM E_movie_actor ma1 JOIN E_movie_actor ma2 ON (ma1.end_actor = ma2.start_actor)
-                        join E_movie_actor ma3 on (ma2.end_actor = ma3.start_actor)
-                        join E_movie_actor ma4 on (ma3.end_actor = ma4.start_actor)
-                        join E_movie_actor ma5 on (ma4.end_actor = ma5.start_actor)
-                        join E_movie_actor ma6 on (ma5.end_actor = ma6.start_actor)
-WHERE ma1.start_actor = 369
-AND ma6.end_actor = 3975;
+select * from (select distinct A.name, min(R.Level) over (partition by F.end) as level
+from   F_degrees R, actor A
+where R.end != 1598 and A.id = R.end) as t1
+where t1.level >= 2 and t1.level <= 3
+order by t1.level, t1.name;
 
--- emma stone 369, chelsea field = 3975
+with recursive E_shortest
+     as (select
+                *
+         from   e_movie_actor E
+         where  E.start_actor = 1598
 
--- need to find actors between n and m degrees of separation
--- have a loop...?
+        union all
+         select
+                *
+         from   (E_shortest S join e_movie_actor E on E.start_actor = S.end_actor) as prev)
 
+select * from E_shortest;
+
+
+
+-- I don't want to carry over the end_ids from the previous iteration
 
