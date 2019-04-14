@@ -73,7 +73,7 @@ if ($num_path_2 != 0) {
 		$name_query = "select name from actor where id = %d";
 		$name = dbOneValue($db, mkSQL($name_query, $t[actor1]));
 
-		
+
 		$str = "$start_name was in $title1 "
         if (!is_null($year1)) {
             $str = $str . "($year1) ";
