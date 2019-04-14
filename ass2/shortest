@@ -33,21 +33,28 @@ length1;
 
 $sql = mkSQL($len1, $start_id, $end_id);
 $res = dbQuery($db, $sql);
-$i = 1;
 $num_path_1 = pg_num_rows($res);
 
+
 if ($num_path_1 != 0) {
+	$string_array1 = array();
 	while ($t = dbNext($res)) {
 		// Given start_actor, movie and end_actor, retrieve relevant invo
 		$movie_query = "select title, year from movie where id = %d";
 		$sql = mkSQL($movie_query, $t[movie]);
 		list($title, $year) = dbOneTuple($db, $sql);
-		$str = "$i. $start_name was in $title ($year) with $end_name";
-		echo "$str\n";
+		$str = "$start_name was in $title ($year) with $end_name";
+		array_push($string_array1, $str);
+	}
+	sort($string_array1);
+	$i = 1;
+	foreach ($string_array1 as $a) {
+		echo "$i. $a\n";
 		$i = $i + 1;
 	}
 	exit();
 }
+
 // Now, search for length of 2
 
 $len2 = <<<length2
@@ -72,7 +79,7 @@ if ($num_path_2 != 0) {
 		//Now, get the corresponding actor info
 		$name_query = "select name from actor where id = %d";
 		$name = dbOneValue($db, mkSQL($name_query, $t[actor1]));
-		$str = "$start_name was in $title1 ($title1) with $name; $name was in $title2 ($year2) with $end_name";
+		$str = "$start_name was in $title1 ($year1) with $name; $name was in $title2 ($year2) with $end_name";
 		array_push($string_array2, $str);
 		
 	}
@@ -219,7 +226,7 @@ if ($num_path_5 != 0) {
         $str = $str . "$name3 was in $title4 ($year4) with $name4; ";
         $str = $str . "$name4 was in $title5 ($year5) with $end_name";
 
-        array_push($string_array5);
+        array_push($string_array5, $str);
     }
     sort($string_array5);
     $i = 1;
@@ -280,8 +287,8 @@ if ($num_path_6 != 0) {
         //Combine into string
         $str = "$start_name was in $title1 ($year1) with $name1; ";
         $str = $str . "$name1 was in $title2 ($year2) with $name2; ";
-        $str = $str . "$name2 was in $title3 ($year3) with $name3;  ";
-        $str = $str . "$name3 was in $title4 ($year4) with $name4;  ";
+        $str = $str . "$name2 was in $title3 ($year3) with $name3; ";
+        $str = $str . "$name3 was in $title4 ($year4) with $name4; ";
         $str = $str . "$name4 was in $title5 ($year5) with $name5; ";
         $str = $str . "$name5 was in $title6 ($year6) with $end_name";
         array_push($string_array6, $str);

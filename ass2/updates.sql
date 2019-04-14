@@ -62,10 +62,6 @@ from C_table ct, genre g
 where ct.id = g.movie_id
 order by ct.id;
 
-create or replace view C_ans(id, title, year, imdb_score, num_voted_users, common_genre_count, common_keyword_count) as
-select ct.*, NULL, NULL
-from C_table ct;
-
 
 create or replace view D_movie_genre(id, title, genre) as
 select m.id, m.title, g.genre
@@ -78,4 +74,8 @@ from movie m join keyword k on (m.id = k.movie_id);
 -- Create a view of the potential paths (actors (end_actor) that have worked on the same movie as the start actor)
 create or replace view E_movie_actor (start_actor, movie, end_actor) as
 select a1.actor_id start_actor, a2.movie_id, a2.actor_id as end_actor
+from acting a1 join acting a2 on (a1.movie_id = a2.movie_id and a1.actor_id != a2.actor_id);
+
+create or replace view F_actor_actor (start_actor, end_actor) as
+select a1.actor_id as start_actor, a2.actor_id as end_actor
 from acting a1 join acting a2 on (a1.movie_id = a2.movie_id and a1.actor_id != a2.actor_id);

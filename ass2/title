@@ -11,7 +11,7 @@ $movie_match = <<<hello
 select m.id, m.title, m.year, m.content_rating, r.imdb_score
 from movie m, rating r
 where m.id = r.movie_id and m.title ~* %s
-order by m.year asc, m.content_rating asc, m.title asc;
+order by m.year asc, r.imdb_score desc, m.title asc;
 hello;
 
 //sort by year, imdb rating then title (all in asc)
@@ -48,9 +48,8 @@ hey;
         $res2 = dbQuery($db, $sql2);
         $num_rows = pg_num_rows($res2);
         $j = 0;
-        $str2 = "";
         if ($num_rows > 0) {
-                $str2 = "[";
+                $str2 = " [";
                 while ($t2 = dbNext($res2)) {
                         $str2 = $str2 . "$t2[genre]";
                         $j = $j + 1;
@@ -58,7 +57,7 @@ hey;
                                 $str2 = $str2 . "]";
                                 break;
                         } else {
-                                $str2 = $str2 . ", ";
+                                $str2 = $str2 . ",";
                         }
                 }
         }
