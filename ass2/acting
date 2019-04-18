@@ -23,10 +23,10 @@ $i = 1;
 while ($t = dbNext($res)){
 	$str = "$i. ";
 	//maybe no director, year or rating	
-	$str = $str . $t[title];
-	$str = $str . " -- ";
+	$str = $str . "$t[title] ";
+
 	if (!is_null($t[director])) {
-		$str = $str . "$t[director] ";
+		$str = $str . "-- $t[director] ";
 	}
 	$str = $str . "(";
 	if (!is_null($t[year])) {

@@ -46,11 +46,8 @@ genres;
 			$str2 = "$i2. ";
 			$str2 = $str2 . "$t1[title] ";
 			// It's possible for year, rating and language to all be null
-			if (!(is_null($t1[year])) ||  !(is_null($t1[content_rating])) || !(is_null($t1[lang]))) {
-				$str2 = $str2 . "(";
-				if (!(is_null($t1[year]))) {
-					$str2 = $str2 . "$t1[year], ";
-				}
+			if ( !(is_null($t1[content_rating])) || !(is_null($t1[lang]))) {
+				$str2 = $str2 . "($t1[year], ";
 				if (!(is_null($t1[content_rating]))) {
 					$str2 = $str2 . "$t1[content_rating], ";
 				}
@@ -59,7 +56,6 @@ genres;
 				}
 				$str2 = $str2 . ")";
 			}
-
 			// It's possible for imdb_score, votes and numvotes to be null
 			if (!(is_null($t1[imdb_score])) || !(is_null($t1[num_voted_users]))) {
 				$str2 = $str2 . " [";
@@ -105,11 +101,8 @@ hello2;
 		$str2 = "$i2. ";
 		$str2 = $str2 . "$t2[title] ";
 		// It's possible for year, rating and language to all be null
-		if (!(is_null($t2[year])) || !(is_null($t2[content_rating])) || !(is_null($t2[lang]))) {
-			$str2 = $str2 . "(";
-			if (!(is_null($t2[year]))) {
-				$str2 = $str2 . "$t2[year], ";
-			}
+		if (!(is_null($t2[content_rating])) || !(is_null($t2[lang]))) {
+			$str2 = $str2 . "($t2[year], ";
 			if (!(is_null($t2[content_rating]))) {
 				$str2 = $str2 . "$t2[content_rating], ";
 			}
