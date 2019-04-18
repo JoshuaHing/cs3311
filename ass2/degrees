@@ -5,178 +5,48 @@ require("a2.php");
 
 $db = dbConnect(DB_CONNECTION);
 // Insert code here
-$actor_name = $argv[1];
+
+$name = $argv[1];
 $lower = $argv[2];
 $upper = $argv[3];
 
-// Get the id of the input actor
+$query = <<<hello
+
+with recursive F_degrees
+as (select
+    E.end_actor as end,
+	    1 as Level
+		from   e_movie_actor E
+		where  E.start_actor = %d
+
+		union all
+
+		select
+		distinct
+		prev.end_actor,
+		prev.Level + 1
+		from   (F_degrees F join e_movie_actor E on E.start_actor = F.end and F.level < %d) as prev)
+
+
+
+select * from (select distinct A.name, min(F.Level) over (partition by F.end) as level
+from   F_degrees F, actor A
+where F.end != %d and A.id = F.end) as t1
+where t1.level >= %d and t1.level <= %d
+order by t1.level, t1.name;
+
+hello;
+
 $id_query = "select id from actor where name ilike %s";
-$actor_id = dbOneValue($db, mkSQL($id_query, $actor_name));
+$id = dbOneValue($db, mkSQL($id_query, $name));
 
-//First, try to find all actors with degree of separation of 1
-//Sort by degrees of separation then by name
-//
-$degree1 = <<<dg1
-select distinct A.name, 1 as level from (
-select ma1.end_actor
-from E_movie_actor as ma1
-where ma1.start_actor = %s) as t1 join actor A on (A.id = t1.end_actor)
-where t1.end_actor != %s
-order by A.name;
-dg1;
+$res_query = mkSQL($query, $id, $upper, $id, $lower, $upper);
 
-$degree2 = <<<dg2
-select distinct A.name, 2 as level from (
-select ma2.end_actor
-from E_movie_actor as ma1 join E_movie_actor as ma2 on (ma1.end_actor = ma2.start_actor)
-where ma1.start_actor = %s
-
-except
-
-select ma1.end_actor
-from E_movie_actor as ma1
-
-where ma1.start_actor = %s) as t2 join actor A on (A.id = t2.end_actor)
-where t2.end_actor  != %s
-order by A.name;
-dg2;
-
-$degree3 = <<<dg3
-select distinct A.name, 3 as level from (
-select ma3.end_actor
-from E_movie_actor as ma1 join E_movie_actor as ma2 on (ma1.end_actor = ma2.start_actor)
-                          join E_movie_actor as ma3 on (ma2.end_actor = ma3.start_actor)
-where ma1.start_actor = %s
-
-except
-
-select ma2.end_actor
-from E_movie_actor as ma1 join E_movie_actor as ma2 on (ma1.end_actor = ma2.start_actor)
-where ma1.start_actor = %s) as t3 join actor A on (A.id = t3.end_actor)
-where t3.end_actor  != %s
-order by A.name;
-dg3;
-
-$degree4 = <<<dg4
-select distinct A.name, 4 as level from (
-select ma4.end_actor
-from E_movie_actor as ma1 join E_movie_actor as ma2 on (ma1.end_actor = ma2.start_actor)
-                          join E_movie_actor as ma3 on (ma2.end_actor = ma3.start_actor)
-                            join E_movie_actor as ma4 on (ma3.end_actor = ma4.start_actor)
-where ma1.start_actor = %s
-
-except
-
-select ma3.end_actor
-from E_movie_actor as ma1 join E_movie_actor as ma2 on (ma1.end_actor = ma2.start_actor)
-                          join E_movie_actor as ma3 on (ma2.end_actor = ma3.start_actor)
-where ma1.start_actor = %s) as t4 join actor A on (A.id = t4.end_actor)
-where t4.end_actor != %s
-order by A.name;
-dg4;
-
-$degree5 = <<<dg5
-select A.name, 5 as level
-from (
-      select distinct ma5.end_actor from E_movie_actor as ma1
-                            join E_movie_actor as ma2 on (ma1.end_actor = ma2.start_actor)
-                            join E_movie_actor as ma3 on (ma2.end_actor = ma3.start_actor)
-                            join E_movie_actor as ma4 on (ma3.end_actor = ma4.start_actor)
-                            join E_movie_actor as ma5 on (ma4.end_actor = ma5.start_actor)
-          where ma1.start_actor = %s
-            except
-        select distinct ma4.end_actor from E_movie_actor as ma1
-                            join E_movie_actor as ma2 on (ma1.end_actor = ma2.start_actor)
-                            join E_movie_actor as ma3 on (ma2.end_actor = ma3.start_actor)
-                            join E_movie_actor as ma4 on (ma3.end_actor = ma4.start_actor)
-            where ma1.start_actor = %s
-
-
-        ) as res
- join actor A on (A.id = res.end_actor)
-where res.end_actor != %s
-order by A.name;
-dg5;
-
-
-$degree6 = <<<dg6
-select A.name, 6 as level
-from (
-         select t1.end_actor from ((select distinct ma5.end_actor as end from E_movie_actor as ma1
-                            join E_movie_actor as ma2 on (ma1.end_actor = ma2.start_actor)
-                            join E_movie_actor as ma3 on (ma2.end_actor = ma3.start_actor)
-                            join E_movie_actor as ma4 on (ma3.end_actor = ma4.start_actor)
-                            join E_movie_actor ma5 on (ma4.end_actor = ma5.start_actor)
-          where ma1.start_actor = %s) as checkpoint
-        join F_actor_actor as ma6 on (checkpoint.end= ma6.start_actor)) as t1
-            except
-        (select distinct ma5.end_actor as end from E_movie_actor as ma1
-                            join E_movie_actor as ma2 on (ma1.end_actor = ma2.start_actor)
-                            join E_movie_actor as ma3 on (ma2.end_actor = ma3.start_actor)
-                            join E_movie_actor as ma4 on (ma3.end_actor = ma4.start_actor)
-                            join E_movie_actor as ma5 on (ma4.end_actor = ma5.start_actor)
-            where ma1.start_actor = %s)
-
-
-        ) as res
- join actor A on (A.id = res.end_actor)
-where res.end_actor != %d
-order by A.name;
-dg6;
-
-$i = $lower;
-$count = 1;
-while ($i <= $upper) {
-	if ($i == 1) {
-		$res = dbQuery($db, mkSQL($degree1, $actor_id, $actor_id));
-		while ($t = dbNext($res)) {
-			echo "$count. $t[name] ($t[level])\n";
-			$count = $count + 1;
-		}
-	} else if ($i == 2) {
-		$res = dbQuery($db, mkSQL($degree2, $actor_id, $actor_id, $actor_id));
-		while ($t = dbNext($res)) {
-			echo "$count. $t[name] ($t[level])\n";
-			$count = $count + 1;
-		}
-
-
-	} else if ($i == 3) {
-		$res = dbQuery($db, mkSQL($degree3, $actor_id, $actor_id, $actor_id));
-		while ($t = dbNext($res)) {
-			echo "$count. $t[name] ($t[level])\n";
-			$count = $count + 1;
-		}
-
-
-	} else if ($i == 4) {
-		$res = dbQuery($db, mkSQL($degree4, $actor_id, $actor_id, $actor_id));
-		while ($t = dbNext($res)) {
-			echo "$count. $t[name] ($t[level])\n";
-			$count = $count + 1;
-		}
-		echo "done for 4\n";
-
-
-	} else if ($i == 5) {
-		$res = dbQuery($db, mkSQL($degree5, $actor_id, $actor_id, $actor_id));
-		while ($t = dbNext($res)) {
-			echo "$count. $t[name] ($t[level])\n";
-			$count = $count + 1;
-		}
-		echo "done for 5\n";
-
-	} else if ($i == 6) {
-		$res = dbQuery($db, mkSQL($degree6, $actor_id, $actor_id, $actor_id));
-		while ($t = dbNext($res)) {
-			echo "$count. $t[name] ($t[level])\n";
-			$count = $count + 1;
-		}
-		echo "done for 6\n";
-	}
-
+$res = dbQuery($db, $res_query);
+$i = 1;
+while ($t = dbNext($res)) {
+	echo "$i. $t[name] ($t[level])\n";
 	$i = $i + 1;
 }
-
 
 ?>
